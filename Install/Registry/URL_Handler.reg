@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ssh]
+@="URL:ssh Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\ssh\DefaultIcon]
+@="\"c:\\windows\\system32\\wsl.exe\""
+
+[HKEY_CLASSES_ROOT\ssh\shell]
+
+[HKEY_CLASSES_ROOT\ssh\shell\open]
+
+[HKEY_CLASSES_ROOT\ssh\shell\open\command]
+@="c:\\windows\\system32\\wsl.exe -e tmux new-window \"sshurl \\\"%1\\\"\""

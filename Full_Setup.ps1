@@ -1,10 +1,15 @@
 # PowerShell
 
 # Parameter to prevent infinite recursion loop
-param([switch]$elevated)
+param(
+    [switch]$elevated = $false,
+    [string]$executionPolicy = $false
+)
 
 # Ensure ExecutionPolicy Policy is set to RemoteSigned
-$executionPolicy = Get-ExecutionPolicy -Scope CurrentUser
+if ($executionPolicy -eq $false) {
+    $executionPolicy = Get-ExecutionPolicy -Scope CurrentUser
+}
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # Ensure this script is run as admin

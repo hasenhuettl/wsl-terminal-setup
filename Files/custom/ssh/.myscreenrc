@@ -1,0 +1,25 @@
+term screen-256color
+startup_message off
+nethack on
+deflogin on
+vbell on
+vbell_msg "   Wuff  ----  Wuff!!  "
+defscrollback 1024
+bind ^k
+bind ^\
+bind \\ quit
+bind K kill
+bind I login on
+bind O login off
+bind } history
+# 256 color support
+attrcolor   b ".I"
+termcapinfo   xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce      on
+
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{= gW} %H %{= KW} %-w%{= cW} %n %t %{-}%+w"
+termcapinfo xterm*|linux*|rxvt*|Eterm* OP
+termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+termcapinfo screen*|xterm|xterms|xs|rxvt|tmux* ti@:te

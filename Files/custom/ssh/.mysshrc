@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "$SHELL" | grep bash 2>&1 > /dev/null || $SHELL -i
+
+start_screen () {
+  which zsh 2>&1 > /dev/null && echo "shell zsh" >> ".myscreenrc"
+  if [ -d "/usr/share/lib/terminfo/t" ] ; then
+    cp .terminfo/t/* /usr/share/lib/terminfo/t
+  fi
+  list=($(screen -ls | awk '/[0-9]+\.pt/ {print $1}') )
+  if [ "${#list[@]}" -gt 0 ] ; then
+    PS3='Please enter your choice: '
+    list+=('new session')
+    select opt in "${list[@]}"
+    do
+      case "$opt" in
+          "new session")
+              exec screen -c .myscreenrc
+              break
+              ;;
+          *) 
+            exec screen -x "$opt" -c .myscreenrc
+            ;;
+      esac
+    done
+  else 
+    exec screen -c .myscreenrc
+  fi
+}
+start_tmux () {
+  exec tmux new-session -A -s "$USER@$(hostname -s)"
+}
+
+which tmux 2>&1 > /dev/null && start_tmux
+which screen 2>&1 > /dev/null || exec $SHELL -i
+start_screen
+

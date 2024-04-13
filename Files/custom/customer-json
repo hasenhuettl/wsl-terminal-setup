@@ -1,0 +1,4 @@
+#!/bin/bash
+FILENAME="$( wslpath "$2" )"
+/usr/bin/ssh customer-reports "./$1" < "$FILENAME"
+rm "$FILENAME"

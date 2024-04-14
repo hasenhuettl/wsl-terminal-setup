@@ -2,18 +2,22 @@
 # -------------------------------------
 # Imports
 # -------------------------------------
-$rootFolder = $PSScriptRoot | split-path -parent | split-path -parent
 
+# Root Path for WSL-Setup
+$rootPath = $PSScriptRoot | split-path -parent | split-path -parent
+
+# Convert Windows-style path to Linux-style path
+$linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
+
+# Bash script paths
+$initial_Install = "$linuxStyleRootPath/Install/Bash/initial_Install.sh"
+
+# Import functions
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
-. (Join-Path $rootFolder '\Config\config.ps1')
+. (Join-Path $rootPath '\Config\config.ps1')
 
-$bashScriptPath = Join-Path $rootFolder '/Install/Bash/initial_Install.sh'
-# Convert Windows-style path to Linux-style path
-$linuxStylePath = $bashScriptPath -replace '\\', '/' -creplace '^([A-Za-z]):/', '/mnt/$1/'
-
-# Execute the Bash script
-bash "$linuxStylePath"
+bash $initial_Install
 exit
 
 Clear-Any-Restart

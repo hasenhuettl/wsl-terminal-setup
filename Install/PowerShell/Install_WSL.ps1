@@ -2,16 +2,26 @@
 # -------------------------------------
 # Imports
 # -------------------------------------
+$rootFolder = $PSScriptRoot | split-path -parent | split-path -parent
+
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
-. (Join-Path $PSScriptRoot '..\..\Config\config.ps1')
+. (Join-Path $rootFolder '\Config\config.ps1')
+
+$bashScriptPath = Join-Path $rootFolder '/Install/Bash/initial_Install.sh'
+# Convert Windows-style path to Linux-style path
+$linuxStylePath = $bashScriptPath -replace '\\', '/' -creplace '^([A-Za-z]):/', '/mnt/$1/'
+
+# Execute the Bash script
+bash "$linuxStylePath"
+exit
 
 Clear-Any-Restart
 
 if (Should-Run-Step "Install") {
 	Write-Host "Installing WSL..."
 
-	wsl --install --distribution $distribution
+	wsl --install --distribution "$distribution"
 
 	Wait-For-Keypress "The script will continue after a reboot, press any key to reboot..."
 	Restart-And-Resume $script "Setup"

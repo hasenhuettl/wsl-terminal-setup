@@ -3,7 +3,7 @@
 set -e
 
 sudo apt update
-sudo apt install tmux zsh sshpass tldr -y
+sudo apt install tmux zsh sshpass tldr gh -y
 
 mkdir /git
 cd /git

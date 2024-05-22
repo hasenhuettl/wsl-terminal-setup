@@ -41,18 +41,8 @@ done
 ssh_auto "$@" uptime 
 sleep 1
 ssh -O check "$@" || no_multi_session "$@"
-realhost=$(echo "$host" | awk -F '@' '{print $2}')
-if [ -z "$realhost" ] ; then
-  realhost="$host"
-fi
-skel="$HOME/custom/ssh/intern"
-if [ -d "$HOME/custom/ssh/${realhost}" ] ; then
-  skel="$HOME/custom/ssh/${realhost}"
-else
-  if ~/custom/is-vpn.sh "$realhost" ; then
-    skel="$HOME/custom/ssh/vpn"
-  fi
-fi
+
+skel="$HOME/custom/ssh"
 
 if [ $# -gt 1 ] ; then
   rarg=$(echo "${@: 1: -1}")
@@ -60,16 +50,6 @@ if [ $# -gt 1 ] ; then
 else
   rsync -rEtlvz "$skel/" "$host:" || read
 fi
-
-#set -x
-#tmux set -s pane-border-status bottom
-#if /home/${USER}/custom/is-vpn.sh "$realhost" ; then
-#  tmux set -s pane-border-format "#[bold,fg=#000000,bg=#ff3333]ssh $host"
-#  autostart=$(cat /home/${USER}/custom/sshexec-vpn.sh)
-#else
-#  tmux set -s pane-border-format "#[bold,fg=#33dd33,bg=#000000]ssh $host"
-#  autostart=$(cat /home/${USER}/custom/sshexec.sh)
-#fi
 
 #tmux set-option -s status-interval 1
 ssh_auto "$@" "tmux -V" && tmux set-option  -w '@fwdmouse' 1

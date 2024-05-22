@@ -32,3 +32,6 @@ export PROMPT='${COLOR_USR}%n${COLOR_ATS}@${COLOR_SRV}%m ${COLOR_DIR}%3~ ${COLOR
 export HISTIGNORE=' *'
 
 export GOPATH=$HOME/go
+
+alias ssh=~/custom/myssh.sh
+run-parts /etc/update-motd.d

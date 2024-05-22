@@ -12,3 +12,6 @@ if exists('$TMUX')
     autocmd BufEnter * call system("tmux rename-window '" . expand("%:t") . "'")
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
+
+nnoremap <silent> <C-i> :set nu! <CR>
+nnoremap <silent> <C-p> :set paste!<CR>

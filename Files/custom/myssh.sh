@@ -53,18 +53,8 @@ done
 ssh_auto "$@" uptime 
 sleep 1
 ssh -O check "$@" || no_multi_session "$@"
-realhost=$(echo "$host" | awk -F '@' '{print $2}')
-if [ -z "$realhost" ] ; then
-  realhost="$host"
-fi
-skel="$HOME/custom/ssh/intern"
-if [ -d "$HOME/custom/ssh/${realhost}" ] ; then
-  skel="$HOME/custom/ssh/${realhost}"
-else
-  if ~/custom/is-vpn.sh "$realhost" ; then
-    skel="$HOME/custom/ssh/vpn"
-  fi
-fi
+
+skel="$HOME/custom/ssh"
 
 if [ $# -gt 1 ] ; then
   rarg=$(echo "${@: 1: -1}")

@@ -1,6 +1,8 @@
 #!/usr/bin/zsh
 echo "$*"
-#~/custom/rekey.sh
+
+ENABLE_LOGGING=false
+
 host="${@: -1}"
 printf '\033k%s\033\\' "$host"
 date=$(date "+%Y.%m.%d-%H.%M.%S")
@@ -18,16 +20,26 @@ ssh_auto () {
   for ((i = 1; i <= $#; i++ )); do
      format_extra=$(builtin printf "%s %s" "${format_extra}" "%q")
   done
-	script -q -a --command "$(builtin printf "${format_pass}ssh${format_extra}" "$@" )" "/home/${USER}/log/$date-$host"
+
+  # Check if logging is enabled
+  if [ "${ENABLE_LOGGING}" = "true" ]; then
+    script -q -a --command "$(builtin printf "${format_pass}ssh${format_extra}" "$@" )" "/home/${USER}/log/$date-$host"
+  else
+    eval "$(builtin printf "${format_pass}ssh${format_extra}" "$@" )"
+  fi
 }
 
 no_multi_session () {
   echo "No ControlMaster"
   ssh_auto -o "ControlMaster=no" -t "$@"
   ret=$?
-  xz "/home/${USER}/log/$date-$host"
-  echo "closing in 2 seconds"
-  sleep 2
+  
+  if [ "${ENABLE_LOGGING}" = "true" ]; then
+    xz "/home/${USER}/log/$date-$host"
+    echo "closing in 2 seconds"
+    sleep 2
+  fi
+  
   exit $ret
 }
 
@@ -41,8 +53,18 @@ done
 ssh_auto "$@" uptime 
 sleep 1
 ssh -O check "$@" || no_multi_session "$@"
-
-skel="$HOME/custom/ssh"
+realhost=$(echo "$host" | awk -F '@' '{print $2}')
+if [ -z "$realhost" ] ; then
+  realhost="$host"
+fi
+skel="$HOME/custom/ssh/intern"
+if [ -d "$HOME/custom/ssh/${realhost}" ] ; then
+  skel="$HOME/custom/ssh/${realhost}"
+else
+  if ~/custom/is-vpn.sh "$realhost" ; then
+    skel="$HOME/custom/ssh/vpn"
+  fi
+fi
 
 if [ $# -gt 1 ] ; then
   rarg=$(echo "${@: 1: -1}")
@@ -58,7 +80,11 @@ ret=$?
 tmux set-option  -w '@fwdmouse' ''
 #kill $pid
 /usr/bin/ssh -O exit "$@"
-xz "/home/${USER}/log/$date-$host"
-echo "closing in 2 seconds"
-sleep 2
+  
+if [ "${ENABLE_LOGGING}" = "true" ]; then
+  xz "/home/${USER}/log/$date-$host"
+  echo "closing in 2 seconds"
+  sleep 2
+fi
+
 exit $ret

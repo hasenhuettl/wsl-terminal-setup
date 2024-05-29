@@ -8,6 +8,9 @@ set tabstop=2
 set shiftwidth=2
 set hlsearch
 
+hi Search ctermbg=LightYellow
+hi Search ctermfg=Red
+
 let &titlestring = expand("%:~")
 
 if exists('$TMUX')

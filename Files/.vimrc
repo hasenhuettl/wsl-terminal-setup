@@ -8,6 +8,9 @@ set shiftwidth=2
 set number
 set hlsearch
 
+hi Search ctermbg=LightYellow
+hi Search ctermfg=Red
+
 if exists('$TMUX')
     autocmd BufEnter * call system("tmux rename-window '" . expand("%:t") . "'")
     autocmd VimLeave * call system("tmux setw automatic-rename")

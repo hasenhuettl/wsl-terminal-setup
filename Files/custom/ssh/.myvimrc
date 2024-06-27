@@ -1,6 +1,5 @@
 syntax on
 set nocompatible
-set background=dark
 set autoindent
 set smartindent
 set expandtab
@@ -49,9 +48,6 @@ map <ScrollWheelRight> <nop>
 map <S-ScrollWheelRight> <nop>
 map <C-ScrollWheelRight> <nop>
 
-:autocmd InsertEnter * set cul
-:autocmd InsertLeave * set nocul
-
-nnoremap <silent> <C-l> :set nu! <CR>
+nnoremap <silent> <C-i> :set nu! <CR>
 nnoremap <silent> <C-p> :set paste!<CR>
                                                            

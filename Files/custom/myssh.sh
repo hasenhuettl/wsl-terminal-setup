@@ -54,13 +54,20 @@ ssh_auto "$@" uptime
 sleep 1
 ssh -O check "$@" || no_multi_session "$@"
 
+# Define local and remote directories
 skel="$HOME/custom/ssh"
+oh_my_zsh="$HOME/.oh-my-zsh"
+remote_oh_my_zsh="~/.oh-my-zsh"
 
-if [ $# -gt 1 ] ; then
+# Check if more than one argument is passed
+if [ $# -gt 1 ]; then
   rarg=$(echo "${@: 1: -1}")
+
   rsync -rEtlvze "ssh $rarg" "$skel/" "$host:" || read
+  rsync -rEtlLvze "ssh $rarg" "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
 else
   rsync -rEtlvz "$skel/" "$host:" || read
+  rsync -rEtlLvz "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
 fi
 
 #tmux set-option -s status-interval 1

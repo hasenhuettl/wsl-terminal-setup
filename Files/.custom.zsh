@@ -34,4 +34,4 @@ export HISTIGNORE=' *'
 export GOPATH=$HOME/go
 
 alias ssh=~/custom/myssh.sh
-run-parts /etc/update-motd.d
+# run-parts /etc/update-motd.d

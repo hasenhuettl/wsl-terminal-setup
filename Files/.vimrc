@@ -7,6 +7,7 @@ set tabstop=2
 set shiftwidth=2
 set number
 set hlsearch
+set backspace=indent,eol,start
 
 hi Search ctermbg=LightYellow
 hi Search ctermfg=Red

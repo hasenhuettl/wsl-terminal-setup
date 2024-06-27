@@ -64,10 +64,10 @@ if [ $# -gt 1 ]; then
   rarg=$(echo "${@: 1: -1}")
 
   rsync -rEtlvze "ssh $rarg" "$skel/" "$host:" || read
-  rsync -rEtlLvze "ssh $rarg" "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
+  rsync -rEtlvze "ssh $rarg" "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
 else
   rsync -rEtlvz "$skel/" "$host:" || read
-  rsync -rEtlLvz "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
+  rsync -rEtlvz "$oh_my_zsh/" "$host:$remote_oh_my_zsh" || read
 fi
 
 #tmux set-option -s status-interval 1

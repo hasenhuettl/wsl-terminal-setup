@@ -32,6 +32,6 @@ map <ScrollWheelRight> <nop>
 map <S-ScrollWheelRight> <nop>
 map <C-ScrollWheelRight> <nop>
 
-nnoremap <silent> <C-i> :set nu! <CR>
+nnoremap <silent> <C-i> :set number! <CR>
 nnoremap <silent> <C-p> :set paste!<CR>
                                                            

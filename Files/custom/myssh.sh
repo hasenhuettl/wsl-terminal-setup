@@ -64,10 +64,8 @@ if [ $# -gt 1 ]; then
   rarg=$(echo "${@: 1: -1}")
 
   rsync -rEtlvze "ssh $rarg" "$skel/" "$host:" || read
-  rsync -rEtlvze "ssh $rarg" "~/.oh-my-zsh/" "$host:~/.oh-my-zsh" || read
 else
   rsync -rEtlvz "$skel/" "$host:" || read
-  rsync -rEtlvz "~/.oh-my-zsh/" "$host:~/.oh-my-zsh" || read
 fi
 
 #tmux set-option -s status-interval 1
@@ -85,3 +83,4 @@ if [ "${ENABLE_LOGGING}" = "true" ]; then
 fi
 
 exit $ret
+

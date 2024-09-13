@@ -17,7 +17,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 sed -i '/export ZSH="\$HOME\/.oh-my-zsh"/i export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST' ~/.zshrc
 sed -i 's/ZSH_THEME="[^"]*"/ZSH_THEME="daveverwer"/' ~/.zshrc
 
-ln -s ~/.custom.zsh .oh-my-zsh/custom/00_custom.zsh
+ln -s ../../.custom.zsh .oh-my-zsh/custom/00_custom.zsh
 ln -s ~/custom/sshurl.pl /usr/bin/sshurl
 
 # reboot (wsl --shutdown)

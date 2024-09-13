@@ -17,6 +17,9 @@ if exists('$TMUX')
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
+nnoremap <silent> <C-i> :set number! <CR>
+nnoremap <silent> <C-p> :set paste!<CR>
+
 set mouse=
 set ttymouse=
 map <ScrollWheelUp> <nop>
@@ -32,6 +35,4 @@ map <ScrollWheelRight> <nop>
 map <S-ScrollWheelRight> <nop>
 map <C-ScrollWheelRight> <nop>
 
-nnoremap <silent> <C-i> :set number! <CR>
-nnoremap <silent> <C-p> :set paste!<CR>
                                                            

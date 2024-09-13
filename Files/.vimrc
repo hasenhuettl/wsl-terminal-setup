@@ -17,5 +17,5 @@ if exists('$TMUX')
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
-nnoremap <silent> <C-i> :set nu! <CR>
+nnoremap <silent> <C-i> :set number! <CR>
 nnoremap <silent> <C-p> :set paste!<CR>

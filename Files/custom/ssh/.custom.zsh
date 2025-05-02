@@ -1,7 +1,7 @@
 umask 0002
 
 alias ls='ls -hF --color=tty'
-alias vi="vim -u ~/.myvimrc"
+alias vim="vim -u ~/.myvimrc"
 
 alias repo="cd /var/www/html/git/dev/prototypes/"
 alias gits="git status"

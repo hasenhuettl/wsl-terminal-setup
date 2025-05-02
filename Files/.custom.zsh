@@ -34,5 +34,11 @@ export HISTIGNORE=' *'
 export GOPATH=$HOME/go
 
 alias ssh=~/custom/myssh.sh
-run-parts /etc/update-motd.d
 
+# run-parts /etc/update-motd.d
+
+# Auto update without prompt
+zstyle ':omz:update' mode auto
+
+# This will check for updates every 14 days
+zstyle ':omz:update' frequency 14

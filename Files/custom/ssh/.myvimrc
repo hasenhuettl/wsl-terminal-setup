@@ -1,35 +1,23 @@
 syntax on
 set nocompatible
-set background=dark
 set autoindent
 set smartindent
-set expandtab
 set tabstop=2
 set shiftwidth=2
+set number
 set hlsearch
+set backspace=indent,eol,start
 
-let &titlestring = expand("%:~")
+hi Search ctermbg=LightYellow
+hi Search ctermfg=Red
 
 if exists('$TMUX')
     autocmd BufEnter * call system("tmux rename-window '" . expand("%:t") . "'")
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
-if &term == "screen"  || &term == "tmux-256color"  ||  &term == "screen-256color" ||  &term == "tmux"
-  set t_ts=^[k
-  set t_fs=^[\
-"  set t_AB=^[[48;5;%dm
-"  set t_AF=^[[38;5;%dm
-endif
-
-if &term == "screen"  || &term == "tmux-256color"  ||  &term == "screen-256color" ||  &term == "tmux" || &term == "xterm" || &term == "xterm-256color"
-  set title
-  set titleold=
-endif
-
-if &term == "tmux-256color"  ||  &term == "screen-256color" || &term == "xterm-256color"
-  set t_Co=256
-endif
+nnoremap <silent> <C-i> :set number! <CR>
+nnoremap <silent> <C-p> :set paste!<CR>
 
 set mouse=
 set ttymouse=
@@ -46,9 +34,4 @@ map <ScrollWheelRight> <nop>
 map <S-ScrollWheelRight> <nop>
 map <C-ScrollWheelRight> <nop>
 
-:autocmd InsertEnter * set cul
-:autocmd InsertLeave * set nocul
-
-nnoremap <silent> <C-l> :set nu! <CR>
-nnoremap <silent> <C-p> :set paste!<CR>
                                                            

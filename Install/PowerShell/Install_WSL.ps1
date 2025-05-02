@@ -57,20 +57,20 @@ if (Should-Run-Step "Setup") {
 	}
 
 	Write-Host "JetBrainsMono Nerd Font installed successfully!"
-	# Start Menu: Start ubuntu
-	# Use your windows username and some other password
-
 
 	# Start Menu -> Launch Windows Terminal:
 
-	# Edit Settings on top of windows terminal v Symbol
-
+	# Edit Settings on top of windows terminal v Symbol:
+	# TODO: import windows Terminal settings.json automatically
 	# Set default profile to ubuntu guid
 	# Change hotkeys for copy as well as insert
 
 
-	# Ubuntu shell
+	# Start Menu: Start ubuntu
+	# Use your windows username and some other password
 
+
+	# Ubuntu shell
 
 	Write-Host "Running APT update and install..."
 	# Call this as script initial_Install.sh with whoami as param!

@@ -1,7 +1,7 @@
 umask 0002
 
 alias ls='ls -hF --color=tty'
-alias vi="vim -u ~/.myvimrc"
+alias vi='nvim'
 
 alias repo="cd /var/www/html/git/dev/prototypes/"
 alias gits="git status"
@@ -35,3 +35,4 @@ export GOPATH=$HOME/go
 
 alias ssh=~/custom/myssh.sh
 run-parts /etc/update-motd.d
+

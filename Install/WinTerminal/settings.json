@@ -1,14 +1,14 @@
 {
     "$help": "https://aka.ms/terminal-documentation",
     "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
+    "actions":
     [
         {
             "command": "find",
             "keys": "ctrl+shift+f"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "splitPane",
                 "split": "auto",
@@ -16,26 +16,26 @@
             }
         },
         {
-            "command": 
+            "command":
             {
                 "action": "newWindow"
             }
         },
         {
-            "command": 
+            "command":
             {
                 "action": "nextTab"
             }
         },
         {
-            "command": 
+            "command":
             {
                 "action": "copy",
                 "singleLine": false
             }
         },
         {
-            "command": 
+            "command":
             {
                 "action": "newTab"
             },
@@ -169,7 +169,7 @@
             "keys": "ctrl+1"
         },
         {
-            "command": 
+            "command":
             {
                 "action": "newTab",
                 "index": 0
@@ -184,19 +184,23 @@
     "focusFollowMouse": false,
     "language": "en-US",
     "launchMode": "maximized",
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
-            "closeOnExit": "graceful"
+            "closeOnExit": "graceful",
+            "font":
+            {
+                "face": "JetBrainsMono Nerd Font"
+            }
         },
-        "list": 
+        "list":
         [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
@@ -233,7 +237,7 @@
             }
         ]
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#0C0C0C",

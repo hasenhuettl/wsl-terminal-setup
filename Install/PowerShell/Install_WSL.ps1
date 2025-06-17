@@ -33,28 +33,48 @@ if (Should-Run-Step "Install") {
 
 if (Should-Run-Step "Setup") {
 	Write-Host "Updating WSL..."
-    wsl --update
+	wsl --update
 
 	winget install Microsoft.WindowsTerminal
 
-	# Start Menu: Start ubuntu
-	# Use your windows username and some other password
-	
-	
+	# Define variables
+	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
+	$destination = "$env:TEMP\JetBrainsMono.zip"
+	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
+
+	# Download the font zip
+	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
+
+	# Extract it
+	Expand-Archive -Path $destination -DestinationPath $extractPath -Force
+
+	# Install fonts
+	$fonts = Get-ChildItem -Path $extractPath -Include *.ttf -Recurse
+	foreach ($font in $fonts) {
+		Copy-Item $font.FullName -Destination "$env:WINDIR\Fonts"
+		New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" `
+			-Name $font.BaseName -PropertyType String -Value $font.Name -Force | Out-Null
+	}
+
+	Write-Host "JetBrainsMono Nerd Font installed successfully!"
+
 	# Start Menu -> Launch Windows Terminal:
-	
-	# Edit Settings on top of windows terminal v Symbol
-	
+
+	# Edit Settings on top of windows terminal v Symbol:
+	# TODO: import windows Terminal settings.json automatically
 	# Set default profile to ubuntu guid
 	# Change hotkeys for copy as well as insert
-	
-	
+
+
+	# Start Menu: Start ubuntu
+	# Use your windows username and some other password
+
+
 	# Ubuntu shell
-	
 
 	Write-Host "Running APT update and install..."
 	# Call this as script initial_Install.sh with whoami as param!
-	bash /mnt/c/Scripts/Bash/initial_Install.sh 
+	bash /mnt/c/Scripts/Bash/initial_Install.sh
 
 	Write-Host "Running Bash Scripts..."
 	# Call this as script downloads.sh

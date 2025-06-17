@@ -22,7 +22,7 @@ function parse_git_branch() {
 COLOR_DEF=$'%f'
 COLOR_USR=$'%F{183}'
 COLOR_ATS=$'%F{146}'
-COLOR_SRV=$'%F{87}'
+COLOR_SRV=$'%F{6}'
 COLOR_DIR=$'%F{197}'
 COLOR_GIT=$'%F{39}'
 setopt PROMPT_SUBST

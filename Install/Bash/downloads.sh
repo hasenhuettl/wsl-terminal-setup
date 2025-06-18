@@ -10,23 +10,25 @@ sudo systemctl enable --now snapd.socket
 sudo snap install nvim
 
 mkdir ~/.config
-mkdir /git
-cd /git
+sudo mkdir /opt/git
+sudo chown $USER:$USER /opt/git
+cd /opt/git
 git clone https://github.com/hasenhuettl/wsl-terminal-setup.git
-ln -s /git/wsl-terminal-setup/Files/custom ~/custom
+ln -s /opt/git/wsl-terminal-setup/Files/custom ~/custom
 
-# symlink all !FILES! that start with . in given path to ~/
-find /git/wsl-terminal-setup/Files/ -maxdepth 1 -type f -name ".*" -exec ln -s {} ~/ \;
-ln -s /git/wsl-terminal-setup/Files/.config/nvim .config/nvim
 cd
+
+# symlink all !FILES AND SYMLINKS! that start with . in given path to ~/
+find /opt/git/wsl-terminal-setup/Files/ -maxdepth 1 -type f,l -name ".*" -exec ln -s {} ~/ \;
+# copy all !DIRECTORIES! that start with . in given path to ~/
+find /opt/git/wsl-terminal-setup/Files/ -maxdepth 1 -type d -name ".*" -exec cp -a {} ~/ \;
 
 # Setup oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 sed -i '/export ZSH="\$HOME\/.oh-my-zsh"/i export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST' ~/.zshrc
 # Use either custom styling (custom.zsh), or:
-# sed -i 's/ZSH_THEME="[^"]*"/ZSH_THEME="daveverwer"/' ~/.zshrc
+sed -i 's/ZSH_THEME="[^"]*"/ZSH_THEME="daveverwer"/' ~/.zshrc
 
-ln -s ../../.custom.zsh .oh-my-zsh/custom/00_custom.zsh # Alternative: ln -s ~/.custom.zsh ~/.oh-my-zsh/custom/custom.zsh
 ln -s ~/custom/sshurl.pl /usr/bin/sshurl
 
 # reboot (wsl --shutdown)

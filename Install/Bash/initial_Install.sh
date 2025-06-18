@@ -22,7 +22,10 @@ echo -e "generateHosts=false" | sudo tee -a /etc/wsl.conf # Disable WSL /etc/hos
 echo -e "generateResolvConf=false" | sudo tee -a /etc/wsl.conf # Disable WSL /etc/resolv.conf override
 
 # DNS setup
-sudo resolvectl dns eth0 1.1.1.1 4.4.4.4
+echo -e "[Resolve]" | sudo tee -a /etc/systemd/resolved.conf
+echo -e "DNS=1.1.1.1 4.4.4.4" | sudo tee -a /etc/systemd/resolved.conf
+echo -e "Domains=domain.com" | sudo tee -a /etc/systemd/resolved.conf
+
 echo -e "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf # DNS 1
 echo -e "nameserver 4.4.4.4" | sudo tee -a /etc/resolv.conf # DNS 2
 

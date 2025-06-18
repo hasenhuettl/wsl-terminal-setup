@@ -2,11 +2,12 @@
 
 set -e
 
-sudo add-apt-repository ppa:neovim-ppa/unstable -y
 sudo apt update
 sudo apt install tmux bash zsh sshpass -y # Terminal handling
 sudo apt installl tldr wget git gh -y # Useful tools
-sudo apt install neovim fzf fd-find ripgrep luarocks -y # Neovim setup
+sudo apt install snapd fzf fd-find ripgrep luarocks -y # Neovim setup
+sudo systemctl enable --now snapd.socket
+sudo snap install nvim
 
 mkdir ~/.config
 mkdir /git

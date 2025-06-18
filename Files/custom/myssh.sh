@@ -1,6 +1,8 @@
 #!/usr/bin/zsh
 echo "$*"
 
+#set -x
+
 ENABLE_LOGGING=false
 
 host="${@: -1}"
@@ -47,8 +49,8 @@ ssh_auto -f -N "$@"
 #pid=$!
 #while ( kill -0 $pid && ! ssh -O check "$@" 2>/dev/null ) ; do
 while (  ! ssh -O check "$@" 2>/dev/null ) ; do
-##  sleep 1
- echo -n
+##sleep 1
+echo -n
 done
 ssh_auto "$@" uptime 
 sleep 1
@@ -63,9 +65,9 @@ remote_oh_my_zsh="~/.oh-my-zsh"
 if [ $# -gt 1 ]; then
   rarg=$(echo "${@: 1: -1}")
 
-  rsync -rEtlvze "ssh $rarg" "$skel/" "$host:" || read
+  rsync -rEtLvze "ssh $rarg" "$skel/" "$host:" || read
 else
-  rsync -rEtlvz "$skel/" "$host:" || read
+  rsync -rEtLvz "$skel/" "$host:" || read
 fi
 
 #tmux set-option -s status-interval 1

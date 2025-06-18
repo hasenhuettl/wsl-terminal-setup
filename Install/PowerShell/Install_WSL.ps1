@@ -22,6 +22,7 @@ exit
 
 Clear-Any-Restart
 
+# Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
 	Write-Host "Installing WSL..."
 

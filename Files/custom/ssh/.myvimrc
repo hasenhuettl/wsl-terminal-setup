@@ -1,19 +1,55 @@
+" General Settings
 syntax on
 set nocompatible
 set autoindent
 set smartindent
+set expandtab
 set tabstop=2
 set shiftwidth=2
 set number
 set hlsearch
 set backspace=indent,eol,start
 
+" Python (Google Style Guide)
+au BufRead,BufNewFile *.py,*.pyw set tabstop=4
+au BufRead,BufNewFile *.py,*.pyw set shiftwidth=4
+au BufRead,BufNewFile *.py,*.pyw set expandtab
+au BufRead,BufNewFile *.py,*.pyw set softtabstop=4
+au BufRead,BufNewFile *.py,*.pyw set textwidth=79
+
+" JavaScript, JSON (Google Style Guide)
+au BufRead,BufNewFile *.js,*.json set tabstop=2
+au BufRead,BufNewFile *.js,*.json set shiftwidth=2
+au BufRead,BufNewFile *.js,*.json set expandtab
+au BufRead,BufNewFile *.js,*.json set softtabstop=2
+
+" HTML, CSS (Google Style Guide)
+au BufRead,BufNewFile *.html,*.css set tabstop=2
+au BufRead,BufNewFile *.html,*.css set shiftwidth=2
+au BufRead,BufNewFile *.html,*.css set expandtab
+au BufRead,BufNewFile *.html,*.css set softtabstop=2
+
+" Go (Google Style Guide)
+au BufRead,BufNewFile *.go set tabstop=4
+au BufRead,BufNewFile *.go set shiftwidth=4
+au BufRead,BufNewFile *.go set noexpandtab
+au BufRead,BufNewFile *.go set softtabstop=4
+
+" Bash (Google Style Guide)
+au BufRead,BufNewFile *.sh set tabstop=2
+au BufRead,BufNewFile *.sh set shiftwidth=2
+au BufRead,BufNewFile *.sh set expandtab
+au BufRead,BufNewFile *.sh set softtabstop=2
+
+" Ensure file types are properly detected
+filetype plugin indent on
+
 hi Search ctermbg=LightYellow
 hi Search ctermfg=Red
 
 if exists('$TMUX')
-    autocmd BufEnter * call system("tmux rename-window '" . expand("%:t") . "'")
-    autocmd VimLeave * call system("tmux setw automatic-rename")
+  autocmd BufEnter * call system("tmux rename-window '" . expand("%:t") . "'")
+  autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
 nnoremap <silent> <C-i> :set number! <CR>
@@ -34,4 +70,3 @@ map <ScrollWheelRight> <nop>
 map <S-ScrollWheelRight> <nop>
 map <C-ScrollWheelRight> <nop>
 
-                                                           

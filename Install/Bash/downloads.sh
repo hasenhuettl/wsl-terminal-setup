@@ -7,6 +7,16 @@ sudo apt install tmux bash zsh sshpass -y # Terminal handling
 sudo apt install tldr wget git gh -y # Useful tools
 sudo apt install snapd fzf fd-find ripgrep luarocks -y # Neovim setup
 sudo systemctl enable --now snapd.socket
+
+# Wait for snapd to be fully initialized
+echo "Waiting for snapd to be ready..."
+until snap version &>/dev/null; do
+    echo "snapd not ready, waiting 5 seconds..."
+    sleep 5
+done
+
+# Step 5: Install nvim using snap
+echo "snapd is ready, installing nvim..."
 sudo snap install nvim --classic
 
 mkdir -p ~/.config

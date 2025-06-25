@@ -10,14 +10,14 @@ $rootPath = $PSScriptRoot | split-path -parent | split-path -parent
 $linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
 
 # Bash script paths
-$initial_Install = "$linuxStyleRootPath/Install/Bash/initial_Install.sh"
+$wsl_setup_script = "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
 
 # Import functions
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
 . (Join-Path $rootPath '\Config\config.ps1')
 
-bash $initial_Install
+bash $wsl_setup_script
 exit
 
 Clear-Any-Restart
@@ -74,8 +74,8 @@ if (Should-Run-Step "Setup") {
 	# Ubuntu shell
 
 	Write-Host "Running APT update and install..."
-	# Call this as script initial_Install.sh with whoami as param!
-	bash /mnt/c/Scripts/Bash/initial_Install.sh
+	# Call this as script wsl_setup.sh with whoami as param!
+	bash /mnt/c/Scripts/Bash/wsl_setup.sh
 
 	Write-Host "Running Bash Scripts..."
 	# Call this as script downloads.sh

@@ -17,20 +17,24 @@ start_screen () {
               exec screen -c .myscreenrc
               break
               ;;
-          *) 
+          *)
             exec screen -x "$opt" -c .myscreenrc
             ;;
       esac
     done
-  else 
+  else
     exec screen -c .myscreenrc
   fi
 }
 start_tmux () {
-  exec tmux new-session -A -s "$USER@$(hostname -s)"
+  bash -lc 'exec tmux new-session -A -s "$USER@$(hostname -s)"'
 }
 
-which tmux 2>&1 > /dev/null && start_tmux
-which screen 2>&1 > /dev/null || exec $SHELL -i
-start_screen
+if hash tmux 2> /dev/null; then
+  start_tmux
+elif type screen > /dev/null; then
+  start_screen
+else
+  exec $SHELL -i
+fi
 

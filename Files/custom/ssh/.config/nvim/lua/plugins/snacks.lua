@@ -7,7 +7,7 @@ return {
     bigfile = { enabled = true },
     dashboard = { enabled = true },
     explorer = { enabled = true },
-    indent = { enabled = true },
+    indent = { enabled = false },
     input = { enabled = true },
     notifier = {
       enabled = true,
@@ -19,6 +19,25 @@ return {
     scroll = { enabled = false },
     statuscolumn = { enabled = true },
     words = { enabled = true },
+    toggle = {
+      map = vim.keymap.set, -- keymap.set function to use
+      which_key = true, -- integrate with which-key to show enabled/disabled icons and colors
+      notify = true, -- show a notification when toggling
+      -- icons for enabled/disabled states
+      icon = {
+        enabled = " ",
+        disabled = " ",
+      },
+      -- colors for enabled/disabled states
+      color = {
+        enabled = "green",
+        disabled = "yellow",
+      },
+      wk_desc = {
+        enabled = "Disable ",
+        disabled = "Enable ",
+      },
+    },
     styles = {
       notification = {
         -- wo = { wrap = true } -- Wrap notifications

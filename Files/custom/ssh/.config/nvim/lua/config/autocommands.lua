@@ -71,6 +71,20 @@ if os.getenv("TMUX") then
   })
 end
 
+vim.api.nvim_create_autocmd("InsertEnter", {
+  callback = function()
+    if vim.o.paste then
+      vim.cmd("IBLDisable")
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+  callback = function()
+    vim.cmd("IBLEnable")
+  end,
+})
+
 vim.cmd([[command! -nargs=0 Q q]])
 vim.cmd([[command! -nargs=0 Wq wq]])
 vim.cmd([[cnoreab W w]])

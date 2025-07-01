@@ -25,11 +25,11 @@ function parse_git_branch() {
 
 # Refer to: https://www.ditig.com/publications/256-colors-cheat-sheet
 COLOR_DEF=$'%f'
-COLOR_USR=$'%F{183}'
-COLOR_ATS=$'%F{146}'
+COLOR_USR=$'%F{5}'
+COLOR_ATS=$'%F{13}'
 COLOR_SRV=$'%F{6}'
-COLOR_DIR=$'%F{197}'
-COLOR_GIT=$'%F{39}'
+COLOR_DIR=$'%F{9}'
+COLOR_GIT=$'%F{14}'
 setopt PROMPT_SUBST
 
 export PROMPT='${COLOR_USR}%n${COLOR_ATS}@${COLOR_SRV}%m ${COLOR_DIR}%3~ ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}$ '

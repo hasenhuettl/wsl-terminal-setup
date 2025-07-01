@@ -55,8 +55,8 @@ endif
 nnoremap <silent> <C-i> :set number! <CR>
 nnoremap <silent> <C-p> :set paste!<CR>
 
-set mouse=
-set ttymouse=
+" set mouse=
+" set ttymouse=
 map <ScrollWheelUp> <nop>
 map <S-ScrollWheelUp> <nop>
 map <C-ScrollWheelUp> <nop>

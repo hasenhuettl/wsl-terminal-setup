@@ -2,6 +2,8 @@
 
 set -e
 
+cd ~
+
 sudo apt update
 sudo apt install tmux bash zsh sshpass -y # Terminal handling
 sudo apt install tldr wget git gh -y # Useful tools
@@ -22,14 +24,19 @@ sudo apt install fzf fd-find ripgrep luarocks -y # Neovim dependencies
 # sudo snap install nvim --classic
 
 # Install nvim using flatpak
-sudo apt install flatpak -y
-flatpak install flathub io.neovim.nvim -y
+# sudo apt install flatpak -y
+# flatpak install flathub io.neovim.nvim -y
 
-cd ~
+# Install nvim using pre-built binary
+curl -L https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+sudo rm -rf /opt/nvim
+sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+rm nvim-linux-x86_64.tar.gz
+
 mkdir -p .config
 sudo mkdir -p git
-cd git
 
+cd git
 FOLDER=~/git/wsl-terminal-setup
 
 if [ ! -d "$FOLDER" ] ; then
@@ -39,12 +46,6 @@ fi
 ln -s $FOLDER/Files/custom ~/custom
 
 cd
-
-# Setup oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-sed -i '/export ZSH="\$HOME\/.oh-my-zsh"/i export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST' ~/.zshrc
-# Use either custom styling (custom.zsh), or:
-sed -i 's/ZSH_THEME="[^"]*"/ZSH_THEME="daveverwer"/' ~/.zshrc
 
 # symlink all !FILES AND SYMLINKS! that start with . in given path to ~/
 find $FOLDER/Files/ -maxdepth 1 -type f,l -name ".*" -exec ln -s {} ~/ \;

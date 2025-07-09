@@ -20,7 +20,7 @@ ssh_auto () {
     format_pass="sshpass -e "
   fi
   for ((i = 1; i <= $#; i++ )); do
-     format_extra=$(builtin printf "%s %s" "${format_extra}" "%q")
+    format_extra=$(builtin printf "%s %s" "${format_extra}" "%q")
   done
 
   # Check if logging is enabled
@@ -35,13 +35,13 @@ no_multi_session () {
   echo "No ControlMaster"
   ssh_auto -o "ControlMaster=no" -t "$@"
   ret=$?
-  
+
   if [ "${ENABLE_LOGGING}" = "true" ]; then
     xz "/home/${USER}/log/$date-$host"
     echo "closing in 2 seconds"
     sleep 2
   fi
-  
+
   exit $ret
 }
 
@@ -52,14 +52,12 @@ while (  ! ssh -O check "$@" 2>/dev/null ) ; do
 ##sleep 1
 echo -n
 done
-ssh_auto "$@" uptime 
+ssh_auto "$@" uptime
 sleep 1
 ssh -O check "$@" || no_multi_session "$@"
 
 # Define local and remote directories
 skel="$HOME/custom/ssh"
-oh_my_zsh="$HOME/.oh-my-zsh"
-remote_oh_my_zsh="~/.oh-my-zsh"
 
 # Check if more than one argument is passed
 if [ $# -gt 1 ]; then
@@ -77,7 +75,7 @@ ret=$?
 tmux set-option  -w '@fwdmouse' ''
 #kill $pid
 /usr/bin/ssh -O exit "$@"
-  
+
 if [ "${ENABLE_LOGGING}" = "true" ]; then
   xz "/home/${USER}/log/$date-$host"
   echo "closing in 2 seconds"

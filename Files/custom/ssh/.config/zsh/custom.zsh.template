@@ -1,2 +1,5 @@
 # Put custom config (e.g.: aliases) here:
 
+# general
+alias please='sudo'
+

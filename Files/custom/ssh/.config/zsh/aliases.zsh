@@ -1,8 +1,9 @@
 alias -- -='cd -' # -- = treat '-' as operand, not as option
-alias ...='../..'
-alias ....='../../..'
-alias .....='../../../..'
-alias ......='../../../../..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ......='cd ../../../../..'
 alias 1='cd -1'
 alias 2='cd -2'
 alias 3='cd -3'
@@ -235,9 +236,15 @@ alias ls='ls -hF --color=tty'
 alias lsa='ls -lah'
 alias md='mkdir -p'
 alias rd=rmdir
-alias repo='cd /var/www/html/git/dev/prototypes/'
 alias ssh=/home/dhasenh/custom/myssh.sh
 alias ussh=/usr/bin/ssh
 alias vi='vim -u ~/.myvimrc'
 alias vim=nvim
+alias svim='sudo HOME=$HOME $(which nvim)' # as root, run nvim with my config
 alias which-command=whence
+alias zrc='vim ~/.config/zsh/.zshrc && source ~/.config/zsh/.zshrc'
+
+if [[ $(hostname) == *-wsl ]]; then
+  alias ssh=~/custom/myssh.sh
+  alias ussh=/usr/bin/ssh
+fi

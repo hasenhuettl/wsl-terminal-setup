@@ -39,6 +39,10 @@ find $FOLDER/Files/ -maxdepth 1 -type d -name ".*" -exec cp -a {} ~/ \;
 
 sudo ln -s ~/custom/sshurl.pl /usr/bin/sshurl
 
+if [ ! -f ~/.config/zsh/custom.zsh ]; then
+  cp ~/.config/zsh/custom.zsh.template ~/.config/zsh/custom.zsh
+fi
+
 # reboot, or on WSL open cmd and execute: wsl --shutdown
 # exit
 

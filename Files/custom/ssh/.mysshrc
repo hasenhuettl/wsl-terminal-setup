@@ -26,9 +26,15 @@ start_screen () {
     exec screen -c .myscreenrc
   fi
 }
+
 start_tmux () {
   bash -lc 'exec tmux new-session -A -s "$USER@$(hostname -s)"'
 }
+
+# Set remote zsh config location
+if hash zsh 2> /dev/null; then
+  export ZDOTDIR="$HOME/.config/zsh"
+fi
 
 if hash tmux 2> /dev/null; then
   start_tmux

@@ -16,7 +16,6 @@ return {
     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })  -- Statusline
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "none" }) -- Inactive status line
     vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })  -- Tabline
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "none" }) -- Transparent background for the current line
   end,
 }
 

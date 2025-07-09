@@ -34,8 +34,8 @@ keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
 -- Navigate buffers
-keymap("n", "<S-n>", ":bnext<CR>", opts)
-keymap("n", "<S-p>", ":bprevious<CR>", opts)
+keymap("n", "<C-n>", ":bnext<CR>", opts)
+keymap("n", "<C-p>", ":bprevious<CR>", opts)
 
 -- Move text up and down
 keymap("n", "<A-j>", ":m .+1<CR>==", opts)
@@ -66,8 +66,11 @@ keymap("x", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 -- Toggle line numbers with Ctrl-i
 keymap("n", "<C-i>", ":set nu!<CR>", opts)
 
--- Toggle paste mode with Ctrl-p
-keymap("n", "<C-p>", ":set paste!<CR>", opts)
+-- Paste mode (will be cleared upon leaving edit mode via autocommand!)
+keymap("n", "<S-i>", ":set nonumber scl=no paste<CR>i", opts) -- Open in paste mode with Shift-i
+
+-- Map tab to escape, so it triggers InsertLeave event
+keymap("i", "<TAB>", "<Esc>", opts)
 
 -- Terminal --
 -- Better terminal navigation

@@ -82,6 +82,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
     vim.cmd("IBLEnable")
+    vim.cmd("set nopaste number scl=yes")
   end,
 })
 

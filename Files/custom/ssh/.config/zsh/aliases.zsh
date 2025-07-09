@@ -16,6 +16,7 @@ alias 9='cd -9'
 alias _='sudo '
 alias egrep='grep -E'
 alias fgrep='grep -F'
+
 alias g=git
 alias ga='git add'
 alias gaa='git add --all'
@@ -229,6 +230,7 @@ alias gwta='git worktree add'
 alias gwtls='git worktree list'
 alias gwtmv='git worktree move'
 alias gwtrm='git worktree remove'
+
 alias l='ls -lah'
 alias la='ls -lAh'
 alias ll='ls -lh'
@@ -236,8 +238,6 @@ alias ls='ls -hF --color=tty'
 alias lsa='ls -lah'
 alias md='mkdir -p'
 alias rd=rmdir
-alias ssh=/home/dhasenh/custom/myssh.sh
-alias ussh=/usr/bin/ssh
 alias vi='vim -u ~/.myvimrc'
 alias vim=nvim
 alias svim='sudo HOME=$HOME $(which nvim)' # as root, run nvim with my config
@@ -248,3 +248,4 @@ if [[ $(hostname) == *-wsl ]]; then
   alias ssh=~/custom/myssh.sh
   alias ussh=/usr/bin/ssh
 fi
+

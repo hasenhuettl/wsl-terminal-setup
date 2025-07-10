@@ -242,7 +242,7 @@ alias vi='vim -u ~/.myvimrc'
 alias vim=nvim
 alias svim='sudo HOME=$HOME $(which nvim)' # as root, run nvim with my config
 alias which-command=whence
-alias zrc='vim ~/.config/zsh/.zshrc && source ~/.config/zsh/.zshrc'
+alias zrc='vim ~/.config/zsh/ && source ~/.config/zsh/.zshrc'
 
 if [[ $(hostname) == *-wsl ]]; then
   alias ssh=~/custom/myssh.sh

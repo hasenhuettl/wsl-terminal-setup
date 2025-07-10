@@ -8,7 +8,11 @@ setopt SHARE_HISTORY # Share history in every terminal session
 setopt HIST_IGNORE_SPACE # Exclude commands that start with space from history
 setopt HIST_NO_STORE
 
-WORDCHARS='~!#$%^&*(){}[]<>?+_' # Consider these as part of a word (e.g.: / is not in here, so CTRL + Cursor-Right will stop at / )
+WORDCHARS='_' # Consider these as part of a word (e.g.: / is not in here, so CTRL + Cursor-Right will stop at / )
 
 export GOPATH=$HOME/go
+
+# Set editor to nvim
+export VISUAL=nvim
+export EDITOR="$VISUAL"
 

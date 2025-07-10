@@ -86,7 +86,8 @@ keymap("n", "<Leader>q", ":q<CR>", { noremap = true }) -- Quit by using ,q
 keymap("n", "<Leader>Q", ":q!<CR>", { noremap = true }) -- Hard quit by using ,Q
 
 -- Open menus
-keymap("n", "<Leader>l", ":Lazy<CR>", { noremap = true }) -- Open Lazy with Space + l
+keymap("n", "<Leader>l", ":Lazy<CR>", { noremap = true }) -- Open Lazy
+keymap("n", "<Leader>p", ":ClipboardHistory<CR>", opts) -- Open clipboard history
 
 -- Tabs
 keymap("n", "<leader>to", ":tabnew<CR>") -- open new tab
@@ -94,17 +95,13 @@ keymap("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 keymap("n", "<leader>tn", ":tabn<CR>") -- go to next tab
 keymap("n", "<leader>tp", ":tabp<CR>") -- go to previous tab
 
--- " Surround word with {{ when pressing ,a (var in Ansible)
-keymap("n", "<Leader>a", "viw<Esc>bi{{ <Esc>ea }}<Esc>", { noremap = true })
--- " Same as above, but also enclosed in double quotes "{{var}}"
-keymap("n", "<Leader>aq", 'viw<Esc>bi"{{ <Esc>ea }}"<Esc>', { noremap = true })
--- " Enclose in () when pressing ,p (parenthesis)
-keymap("n", "<Leader>p", "viw<Esc>bi(<Esc>ea)<Esc>", { noremap = true })
--- " Enclose in {} when pressing ,c (curly)
-keymap("n", "<Leader>c", "viw<Esc>bi{<Esc>ea}<Esc>", { noremap = true })
--- Single quotes with ,sq
-keymap("n", "<Leader>sq", "viw<Esc>bi'<Esc>ea'<Esc>", { noremap = true })
--- Double quotes with ,dq
-keymap("n", "<Leader>dq", 'viw<Esc>bi"<Esc>ea"<Esc>', { noremap = true })
+-- Insert brackets
+keymap("n", "<Leader>a", "viw<Esc>bi{{ <Esc>ea }}<Esc>", { noremap = true }) -- " Surround word with {{ when pressing ,a (var in Ansible)
+keymap("n", "<Leader>aq", 'viw<Esc>bi"{{ <Esc>ea }}"<Esc>', { noremap = true }) -- " Same as above, but also enclosed in double quotes "{{var}}"
+keymap("n", "<Leader>b", "viw<Esc>bi(<Esc>ea)<Esc>", { noremap = true }) -- " Enclose in () when pressing ,b (brackets)
+keymap("n", "<Leader>c", "viw<Esc>bi{<Esc>ea}<Esc>", { noremap = true }) -- " Enclose in {} when pressing ,c (curly)
+keymap("n", "<Leader>sq", "viw<Esc>bi'<Esc>ea'<Esc>", { noremap = true }) -- Single quotes with ,sq
+keymap("n", "<Leader>dq", 'viw<Esc>bi"<Esc>ea"<Esc>', { noremap = true }) -- Double quotes with ,dq
 --  Insert current hosts IP address at cursor when pressing ,ip
 -- BROKEN vim.api.nvim_set_keymap('n', '<Leader>ip', [[:execute 'normal! i' .. vim.fn.system("ifconfig\\|awk '/broadcast/ {print $2}'")<CR>dd]], { noremap = true })
+

@@ -74,21 +74,7 @@ vim.opt.wildignore:append({
   ".orig",
 })
 vim.opt.iskeyword:append({ -- Considers these characters as part of a word
-  "~",
-  "!",
-  "#",
-  "$",
-  "%",
-  "&",
-  "*",
-  "(",
-  ")",
-  "[",
-  "]",
-  "<",
-  ">",
-  "?",
-  "+",
+  "_",
 })
 vim.opt.suffixesadd:append({ ".java", ".rs" }) -- open-these suffixes with gf
 -- vim.opt.shortmess = "ilmnrx" -- flags to shorten vim messages, see :help 'shortmess'

@@ -1,8 +1,7 @@
 local options = {
   autoindent = true, -- match previous indentation when pressing Enter at EOL
   backup = false, -- create no backup file
-  clipboard = "unnamedplus", -- allows neovim to access the system clipboard
-  cmdheight = 2, -- more space in the neovim command line for displaying messages
+  -- clipboard = "unnamedplus", -- share clipboard with windows (as alternative to dragging text via WinTerminal)
   completeopt = { "menuone", "noselect" }, -- mostly just for cmp
   conceallevel = 0, -- so that `` is visible in markdown files
   cursorline = false, -- highlights the current line
@@ -73,9 +72,7 @@ vim.opt.wildignore:append({
   ".hg",
   ".orig",
 })
-vim.opt.iskeyword:append({ -- Considers these characters as part of a word
-  "_",
-})
+-- vim.opt.iskeyword:append({ "_", }) -- Considers these characters as part of a word
 vim.opt.suffixesadd:append({ ".java", ".rs" }) -- open-these suffixes with gf
 -- vim.opt.shortmess = "ilmnrx" -- flags to shorten vim messages, see :help 'shortmess'
 vim.opt.shortmess:append("c") -- don't give |ins-completion-menu| messages

@@ -6,7 +6,10 @@ return {
 
     configs.setup({
       ensure_installed = {
-        "lua", "vim", "vimdoc"
+        "lua",
+        "vim",
+        "vimdoc",
+        "comment",
       },
       auto_install = true,
       sync_install = false,

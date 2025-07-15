@@ -23,7 +23,7 @@ set-hook -g pane-mode-changed 'if -F "#{pane_in_mode}" "selectp -P bg=black" "se
 bind -T copy-mode Space \
     send -X copy-pipe-and-cancel 'tmux save-buffer - | sed -z "s/\n/\r\n/" | clip.exe'
 #bind -T copy-mode Esc \
-#    send -X copy-pipe-and-cancel "tmux save-buffer - | xclip -in -selection clipboard > /dev/null" 
+#    send -X copy-pipe-and-cancel "tmux save-buffer - | xclip -in -selection clipboard > /dev/null"
 bind -T copy-mode Enter \
     send -X copy-pipe-and-cancel 'tmux save-buffer - | sed -z "s/\n/\r\n/" | clip.exe'
 bind -T copy-mode C-c \
@@ -131,7 +131,7 @@ set-window-option -g window-status-style bg=colour220,fg=colour254  # bg=yellow,
 set-window-option -g window-status-activity-style bg=colour254,fg=colour102  # bg=bg1, fg=fg3
 
 # Active window title
-set-window-option -g window-status-current-style bg=colour160,fg=colour254  # bg=red, fg=bg1 
+set-window-option -g window-status-current-style bg=colour160,fg=colour254  # bg=red, fg=bg1
 # Pane borders
 set-option -g pane-active-border-style fg=colour31     # blue accent
 set-option -g pane-border-style fg=colour252           # light gray
@@ -206,7 +206,7 @@ bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
 #
 #bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
 ## Set the history limit so we get lots of scrollback.
-#setw -g history-limit 50000000
+setw -g history-limit 50000000
 
 #############################
 ############# Tmux Vars

@@ -6,6 +6,9 @@ return{
     ---@module "ibl"
     ---@type ibl.config
     opts = {
+      -- indent = {
+      --   char = "┊", -- or "┊" or "|"
+      -- },
       scope = {
         enabled = false,
       },

@@ -1,14 +1,4 @@
 #!/bin/bash
-# Config locations
-export CONFIG_LOCATION="$HOME/.config.custom"
-
-if [[ $(hostname) == *-wsl ]]; then
-  export TMUX_CONF=$CONFIG_LOCATION/tmux/tmux.conf
-else
-  export TMUX_CONF=$CONFIG_LOCATION/tmux/tmux.conf.remote
-fi
-
-screen_conf=$CONFIG_LOCATION/screen/screen.rc
 
 # Functions
 start_screen () {
@@ -38,7 +28,7 @@ start_screen () {
 }
 
 start_tmux () {
-  exec tmux -f $TMUX_CONF new-session -A -s $USER@$(hostname -s)
+  exec tmux -f $TMUX_CONF new-session -A
 }
 
 # Main

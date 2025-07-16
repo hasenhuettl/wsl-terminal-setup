@@ -73,8 +73,11 @@ end
 
 vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
-    if vim.o.paste then
-      vim.cmd("IBLDisable")
+    if vim.o.paste then -- Paste mode is on
+      vim.cmd("IBLDisable") -- Disable indent-blankline
+    end
+    if vim.bo.readonly then -- File is read-only
+      vim.notify("This file is read-only", vim.log.levels.WARN)
     end
   end,
 })

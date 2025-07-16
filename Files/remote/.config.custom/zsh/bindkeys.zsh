@@ -6,9 +6,6 @@ bindkey '^[0B' history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-# add nvim to PATH
-export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
-
 # Terminal word navigation
 bindkey "^[[1;5C" forward-word # CTRL + Cursor-Right
 bindkey "^[[1;5D" backward-word # CTRL + Cursor-Left

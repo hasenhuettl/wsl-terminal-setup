@@ -152,7 +152,7 @@ set-window-option -g window-status-bell-style bg=colour160,fg=colour254  # bg=re
 
 # Status left
 set-option -g status-left "\
-#[fg=colour7, bg=colour252]#{?client_prefix,#[bg=colour160],} #S \
+#[fg=colour7, bg=colour252]#{?client_prefix,#[bg=colour160],} $USER@#H \
 #[fg=colour252, bg=colour254]#{?client_prefix,#[fg=colour160],}"
 
 # Status right

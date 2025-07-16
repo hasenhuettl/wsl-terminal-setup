@@ -57,14 +57,14 @@ alias md='mkdir -p'
 alias rd='rmdir'
 
 # Text editor
-alias vi='vim -u ~/.config.custom/vim/.myvimrc'
+alias vi='\vim -u ~/.config.custom/vim/.myvimrc'
 if hash nvim > /dev/null 2>&1; then
   # Set standard editor to nvim (if its installed)
-  alias vim='env XDG_CONFIG_HOME="$HOME/.config.custom" nvim'
+  alias vim='env XDG_CONFIG_HOME="$HOME/.config.custom" nvim' # run nvim, with config files located in $HOME/.config.custom
   alias svim='sudo env HOME=$HOME XDG_CONFIG_HOME="$HOME/.config.custom" $(which nvim)' # as root, run nvim with my config
 else
   # Else fallback to vim
-  alias vim='vim -u ~/.custom.config/vim/.myvimrc'
+  alias vim='\vim -u ~/.config.custom/vim/.myvimrc'
   alias svim='sudo env HOME=$HOME vim -u ~/.config.custom/vim/.myvimrc' # as root, run vim with my config
 fi
 
@@ -75,7 +75,7 @@ alias fgrep='grep -F'
 alias wget='wget --hsts-file=$HOME/.cache/wget/wget-hsts'
 alias which-command='whence'
 alias brc='vim ~/.config.custom/bash/ && echo "Restart terminal to apply changes"'
-alias nrc='vim ~/.config.custom/nvim/lua' # Open and close neovim
+alias nrc='vim ~/.config.custom/nvim/lua' # applied after nvim is restarted
 alias trc='vim ~/.config.custom/tmux/ && tmux source-file $TMUX_CONF'
 alias zrc='vim ~/.config.custom/zsh/ && source ~/.config.custom/zsh/.zshrc'
 

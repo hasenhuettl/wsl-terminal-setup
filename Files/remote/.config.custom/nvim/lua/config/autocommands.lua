@@ -1,84 +1,123 @@
+-- Vimscript-style autocommands and abbreviations
 vim.cmd([[
-  augroup _general_settings
+  " === General Settings ===
+  augroup GENERAL_SETTINGS
     autocmd!
     autocmd FileType qf,help,man,lspinfo nnoremap <silent> <buffer> q :close<CR>
     autocmd TextYankPost * silent!lua require('vim.highlight').on_yank({higroup = 'Visual', timeout = 200})
-    autocmd BufWinEnter * :set formatoptions-=cro
+    autocmd BufWinEnter * set formatoptions-=cro
     autocmd FileType qf set nobuflisted
-  augroup end
+  augroup END
 
-  augroup _git
+  " === Git Commit Formatting ===
+  augroup GIT
     autocmd!
-    autocmd FileType gitcommit setlocal wrap
-    autocmd FileType gitcommit setlocal spell
-  augroup end
+    autocmd FileType gitcommit setlocal wrap spell
+  augroup END
 
-  augroup _markdown
+  " === Markdown Formatting ===
+  augroup MARKDOWN
     autocmd!
-    autocmd FileType markdown setlocal wrap
-    autocmd FileType markdown setlocal spell
-  augroup end
+    autocmd FileType markdown setlocal wrap spell
+  augroup END
 
-  augroup _auto_resize
+  " === Auto Resize ===
+  augroup AUTO_RESIZE
     autocmd!
     autocmd VimResized * tabdo wincmd =
-  augroup end
+  augroup END
 
-  augroup _alpha
+  " === Alpha Dashboard ===
+  augroup ALPHA
     autocmd!
-    autocmd User AlphaReady set showtabline=0 | autocmd BufUnload <buffer> set showtabline=2
-  augroup end
+    autocmd User AlphaReady set showtabline=0
+    autocmd BufUnload <buffer> set showtabline=2
+  augroup END
 
-  augroup _yaml
+  " === YAML / Ansible ===
+  augroup YAML
     autocmd!
-"    au BufRead,BufNewFile */playbooks/*.yml set filetype=yaml.ansible
-    au BufRead,BufNewFile *.yml set filetype=yaml.ansible
-    au BufRead,BufNewFile *.yaml set filetype=yaml.ansible
-  augroup end
+    autocmd BufRead,BufNewFile *.yml,*.yaml set filetype=yaml.ansible
+  augroup END
 
-" Remove trailing whitespaces at end of line when saving
-augroup remove_trailing_whitespace
+  " === Remove Trailing Whitespace on Save ===
+  augroup TRAILING_WHITESPACE
     autocmd!
-    autocmd BufWritePre * :%s/\s\+$//e
-augroup END
+    autocmd BufWritePre * %s/\s\+$//e
+  augroup END
 
+  " === Abbreviations ===
+  iab sychron synchron
+  iab snychro synchro
+  iab nihct nicht
+  iab Dtaen Daten
+  iab gitb gibt
+  iab teh the
+  iab Teh The
+  iab taht that
+  iab Taht That
+  iab tehre there
+  iab Tehre There
+  iab tihs this
+  iab Tihs This
+  iab tohse those
+  iab Tohse Those
+  iab waht what
+  iab Waht What
+  iab tehn then
+  iab Tehn Then
+  iab Tehse These
+  iab tehse these
+  iab nciht nicht
+  iab Nciht Nicht
+  iab udn und
+  iab Udn Und
+  iab bruacht braucht
+  iab Bruacht Braucht
+  iab keien keine
+  iab Keien Keine
+  iab histroy history
+  iab neccessary necessary
+  iab neccesary necessary
+  iab necesary necessary
+  iab \textt{ \texttt{
+  iab \textttt{ \texttt{
+
+  " === Commands & Abbreviations ===
+  command! -nargs=0 Q q
+  command! -nargs=0 Wq wq
+  cnoreab W w
+  cnoreab W! w!
+  cmap w!! w !sudo tee % >/dev/null
+  command! SaveAsRoot w !sudo tee %
+
+  " === Backup: fallback cursor restore (legacy/compat)===
+  autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 ]])
 
--- Restore cursor position
-vim.api.nvim_create_autocmd({ "BufReadPost" }, {
-	pattern = { "*" },
-	callback = function()
-		vim.api.nvim_exec('silent! normal! g`"zv', false)
-	end,
+-- === Lua Autocommands ===
+
+-- Restore last cursor position
+vim.api.nvim_create_autocmd("BufReadPost", {
+  callback = function()
+    vim.cmd([[silent! normal! g`"zv]])
+  end,
 })
--- Check if running inside TMUX
-if os.getenv("TMUX") then
-  -- Rename TMUX window to the filename on buffer enter
-  vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "*",
-    callback = function()
-      local filename = vim.fn.expand("%:t")
-      vim.fn.system("tmux rename-window '" .. filename .. "'")
-    end,
-  })
 
-  -- Re-enable automatic renaming on exit
-  vim.api.nvim_create_autocmd("VimLeave", {
-    pattern = "*",
-    callback = function()
-      vim.fn.system("tmux setw automatic-rename")
-    end,
-  })
-end
+-- Show notification when opening read-only file
+vim.api.nvim_create_autocmd("BufReadPost", {
+  callback = function()
+    if not vim.bo.modifiable or vim.bo.readonly then
+      vim.notify("Opened read-only file: " .. vim.fn.expand("%"), vim.log.levels.WARN, { title = "Read-Only" })
+    end
+  end,
+})
 
+-- Toggle indent-blankline and notify in insert mode
 vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
-    if vim.o.paste then -- Paste mode is on
-      vim.cmd("IBLDisable") -- Disable indent-blankline
-    end
-    if vim.bo.readonly then -- File is read-only
-      vim.notify("This file is read-only", vim.log.levels.WARN)
-    end
+    if vim.o.paste then vim.cmd("IBLDisable") end
+    if vim.bo.readonly then vim.notify("This file is read-only", vim.log.levels.WARN) end
   end,
 })
 
@@ -89,59 +128,31 @@ vim.api.nvim_create_autocmd("InsertLeave", {
   end,
 })
 
-vim.cmd([[command! -nargs=0 Q q]])
-vim.cmd([[command! -nargs=0 Wq wq]])
-vim.cmd([[cnoreab W w]])
-vim.cmd([[cnoreab W! w!]])
-vim.cmd([[cmap w!! w !sudo tee % >/dev/null]])
-vim.cmd([[command! SaveAsRoot w !sudo tee %]])
+-- TMUX: Rename window to current file
+if os.getenv("TMUX") then
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*",
+    callback = function()
+      local filename = vim.fn.expand("%:t")
+      vim.fn.system("tmux rename-window '" .. filename .. "'")
+    end,
+  })
 
--- Jump to last edited position in the file
-vim.api.nvim_command([[au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif]])
+  vim.api.nvim_create_autocmd("VimLeave", {
+    pattern = "*",
+    callback = function()
+      vim.fn.system("tmux setw automatic-rename")
+    end,
+  })
+end
 
--- Autoformat
--- augroup _lsp
---   autocmd!
---   autocmd BufWritePre * lua vim.lsp.buf.formatting()
--- augroup end
+-- Optional: LSP formatting on save (commented)
+-- vim.api.nvim_create_augroup("LSP", {})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+--   group = "LSP",
+--   pattern = "*",
+--   callback = function()
+--     vim.lsp.buf.format({ async = false })
+--   end,
+-- })
 
-vim.cmd([[
-iab sychron synchron
-iab snychro synchro
-iab nihct nicht
-iab Dtaen Daten
-iab gitb gibt
-iab teh the
-iab Teh The
-iab taht that
-iab Taht That
-iab tehre there
-iab Tehre There
-iab tihs this
-iab Tihs This
-iab tohse those
-iab Tohse Those
-iab waht what
-iab Waht What
-iab tehn then
-iab Tehn Then
-iab Tehse These
-iab tehse these
-iab nciht nicht
-iab Nciht Nicht
-iab udn und
-iab Udn Und
-iab bruacht braucht
-iab Bruacht Braucht
-iab keien keine
-iab Keien Keine
-iab histroy history
-iab neccessary necessary
-iab neccesary necessary
-iab necesary necessary
-
-
-" In case I type one fewer t when using \texttt in LaTeX documents
-iab \textt{ \texttt{
-iab textttt{ texttt{
-]])

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# If not running interactively, don't do anything
+[[ "$-" != *i* ]] && return
+
 # Functions
 start_screen () {
   which zsh 2>&1 > /dev/null && echo "shell zsh" >> "$screen_conf"
@@ -28,13 +31,23 @@ start_screen () {
 }
 
 start_tmux () {
-  exec tmux -f $TMUX_CONF new-session -A
+  # Only run if not already inside tmux & interactive session (Safeguard for infinite shell opening loop)
+  if [[ -z "$TMUX" ]]; then
+    exec tmux -f $TMUX_CONF new-session -A -s "$USER@$(hostname -s)"
+  else
+    echo "Tried to start tmux, but tmux is already running..."
+  fi
 }
 
-# Main
+# ===========================
+# ==== MAIN
+# ===========================
+# Start tmux (if available)
 if hash tmux 2> /dev/null; then
-  start_tmux # Start tmux (if available)
-elif type screen > /dev/null; then
+  start_tmux
+# Else, start screen (if available)
+elif hash screen 2> /dev/null; then
   start_screen # Start tmux (if available)
 fi
+# Else, do nothing
 

@@ -6,30 +6,7 @@ FOLDER=$HOME/git/wsl-terminal-setup
 
 cd ~
 
-sudo apt update
-sudo apt install tmux bash zsh -y # Terminal handling
-sudo apt install tldr wget git gh -y # Useful tools
-sudo apt install fzf fd-find ripgrep luarocks -y # Neovim dependencies
-
-# Install nvim using pre-built binary
-# Check the glibc version
-glibc_version=$(ldd --version | head -n 1 | awk '{print $NF}')
-major_glibc_version=$(echo $glibc_version | cut -d. -f1)
-minor_glibc_version=$(echo $glibc_version | cut -d. -f2)
-
-# Determine the appropriate download link based on glibc version
-if [ "$major_glibc_version" -lt 2 ] || { [ "$major_glibc_version" -eq 2 ] && [ "$minor_glibc_version" -lt 34 ]; }; then
-  echo "glibc version is lower than 2.34. Using older Neovim release. (11.2)"
-  neovim_url="https://github.com/neovim/neovim-releases/releases/download/v0.11.2/nvim-linux-x86_64.tar.gz"
-else
-  echo "glibc version is 2.34 or higher. Using latest Neovim release. (check last updated: July 2025)"
-  neovim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
-fi
-
-curl -LO $neovim_url
-sudo rm -rf /opt/nvim
-sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-rm nvim-linux-x86_64.tar.gz
+source $FOLDER/Install/Bash/install_packages.sh
 
 mkdir -p git
 mkdir -p .ssh/cm_socket
@@ -44,11 +21,24 @@ fi
 cd ~
 
 # Backup old files
+# Check for .bashrc backup
+if [ -e ".bashrc.pre-wsl-terminal-setup" ]; then
+  echo "Error: .bashrc.pre-wsl-terminal-setup already exists. Aborting to prevent overwrite." >&2
+  exit 1
+fi
+
+# Check for .ssh backup
+if [ -e ".ssh.pre-wsl-terminal-setup" ]; then
+  echo "Error: .ssh.pre-wsl-terminal-setup already exists. Aborting to prevent overwrite." >&2
+  exit 1
+fi
+
+[ -e ".config.custom" ] && mv ".config.custom" ".config.custom.pre-wsl-terminal-setup"
 [ -e ".bashrc" ] && mv ".bashrc" ".bashrc.pre-wsl-terminal-setup"
 [ -e ".ssh" ] && mv ".ssh" ".ssh.pre-wsl-terminal-setup"
 
 # Create symlinks
-ln -sf "$FOLDER/Files/local/.config.custom" ".config.custom"
+ln -s "$FOLDER/Files/local/.config.custom" ".config.custom"
 ln -s ".config.custom/bash/.bashrc" ".bashrc"
 
 # TODO:
@@ -61,8 +51,11 @@ cp -r "$FOLDER/Files/local/.ssh" ".ssh"
 [ ! -e .config.custom/zsh/custom.zsh ] && cp .config.custom/zsh/.custom.zsh.template .config.custom/zsh/custom.zsh
 
 # Ask for reboot
-echo "The system may require a reboot. Do you want to reboot now? (y/n): "
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+printf "${BLUE}The system ($HOSTNAME) may require a reboot. Do you want to reboot now?${NC} (y/n): "
 read -n 1 response
+printf "\n"
 
 if [[ "$response" =~ ^[Yy]$ ]]; then
   # Function to check if the system is WSL
@@ -79,5 +72,5 @@ if [[ "$response" =~ ^[Yy]$ ]]; then
     sudo reboot
   fi
 else
-  echo "Reboot aborted."
+  echo "Reboot canceled."
 fi

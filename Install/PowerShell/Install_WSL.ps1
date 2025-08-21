@@ -74,11 +74,10 @@ if (Should-Run-Step "Setup") {
 	# Ubuntu shell
 
 	Write-Host "Running APT update and install..."
-	# Call this as script wsl_setup.sh with whoami as param!
 	bash /mnt/c/Scripts/Bash/wsl_setup.sh
 
 	Write-Host "Running Bash Scripts..."
-	# Call this as script downloads.sh
+	bash /mnt/c/Scripts/Bash/downloads.sh
 
 	# Restart WSL
 	wsl --shutdown

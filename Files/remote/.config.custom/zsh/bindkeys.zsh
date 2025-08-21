@@ -11,6 +11,7 @@ bindkey "^[[1;5C" forward-word # CTRL + Cursor-Right
 bindkey "^[[1;5D" backward-word # CTRL + Cursor-Left
 bindkey "^[[1;3D" backward-kill-word # ALT + Cursor-Left
 bindkey "^[^?"    backward-kill-word # ALT + BACKSPACE
+bindkey "^[[3~" delete-char # ENTF
 bindkey "^[[1;3C" kill-word # ALT + Cursor-Right
 bindkey "^[[3;3~" kill-word # ALT + ENTF
 

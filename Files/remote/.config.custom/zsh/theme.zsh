@@ -3,16 +3,25 @@ function parse_git_branch() {
   git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1] /p'
 }
 
+# Prompt = text at beginning of terminal line
 # Color sheet: https://www.ditig.com/publications/256-colors-cheat-sheet
-COLOR_DEF=$'%f'
-COLOR_USR=$'%F{5}'
-COLOR_ATS=$'%F{13}'
-COLOR_SRV=$'%F{6}'
-COLOR_DIR=$'%F{9}'
-COLOR_GIT=$'%F{14}'
+COLOR_RESET=$'%f'
+COLOR_D_RED=$'%F{1}'
+COLOR_L_RED=$'%F{9}'
+COLOR_PURPLE=$'%F{5}'
+COLOR_TEAL=$'%F{6}'
+COLOR_PINK=$'%F{13}'
+COLOR_L_BLUE=$'%F{14}'
 
+# %n=User, %m=hostname, %3=directory
 setopt PROMPT_SUBST
-export PROMPT='${COLOR_USR}%n${COLOR_ATS}@${COLOR_SRV}%m ${COLOR_DIR}%3~ ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}$ '
+export PROMPT='${COLOR_PURPLE}%n${COLOR_PINK}@${COLOR_TEAL}%m ${COLOR_L_RED}%3~ ${COLOR_L_BLUE}$(parse_git_branch)${COLOR_RESET}$ '
+
+## Echo CTRL+C => ^C
+#TRAPINT() {
+#  print -Pn "${COLOR_D_RED}^C${COLOR_RESET}"
+#  return 128
+#}
 
 # Red display for broken symlinks
 export LSCOLORS=ExFxBxDxCxegedabagacad

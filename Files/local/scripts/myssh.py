@@ -9,7 +9,8 @@ from datetime import datetime
 import getpass
 import argparse
 import socket
-import textwrap
+import textwrap # Text manipulation, e.g.: Remove any common leading whitespace from every line in text.
+from colorama import Fore, Back, Style # print in color
 
 # === Config ===
 
@@ -37,151 +38,165 @@ class Config:
 
 # === Global vars ===
 
-multiplexer_active = False
-args = None
+DATA_DIR = Path.home() / ".local" / "share" / "ssh"
+BLACKLIST_FILE = DATA_DIR / "hosts_without_multiplexing.txt"
+CONTROLMASTER_ACTIVE = False
+ARGS = None
 
 # === Helper functions ===
 
-def run_safely(cmd, verbose=False, **kwargs):
+def rename_tmux_window(text):
+    run(["tmux", "rename-window", text], verbose=ARGS.verbose)
+
+def log_cmd(cmd):
+    print(f"+ {' '.join(shlex.quote(str(c)) for c in cmd)}")
+
+def run_no_loop(cmd, verbose=False, **kwargs):
     """Run a command, but don't invoke cleanup on failure (for use inside cleanup)."""
     try:
         if verbose:
             log_cmd(cmd)
         return subprocess.run(cmd, check=False, text=True, **kwargs)
     except Exception as e:
-        print(f"[╥﹏╥] Warning: Command failed in cleanup: {e}")
+        print(f"{Fore.RED}[╥﹏╥] Warning: Command failed in cleanup: {e}{Style.RESET_ALL}")
 
-def cleanup():
-    """Cleanup everything left behind"""
-    if multiplexer_active:
-        print("[^_^] Closing ControlMaster session.")
-        run_safely(["ssh", "-O", "exit", args.target], verbose=args.verbose)
-    else:
-        print(f"[╥﹏╥] No active ControlMaster session found for {args.target}!")
-
-    run_safely(["tmux", "setw", "automatic-rename", "on"], verbose=args.verbose)
-
-def log_cmd(cmd):
-    print(f"+ {' '.join(shlex.quote(str(c)) for c in cmd)}")
-
-def run(cmd, check=True, capture_output=False, text=True, verbose=False, **kwargs):
+def run(cmd, check=True, capture_output=False, text=True, timeout=None, verbose=False, **kwargs):
     """Run a command, and output it via print if verbose is set."""
     try:
         if verbose:
             log_cmd(cmd)
-        return subprocess.run(cmd, check=check, capture_output=capture_output, text=text, **kwargs)
+        return subprocess.run(cmd, check=check, capture_output=capture_output, text=text, timeout=timeout, **kwargs)
     except KeyboardInterrupt:
-        print("\n✋ Process interrupted by user.")
+        print(f"\n✋ Process interrupted by user.")
         cleanup()
-        sys.exit(0)
     except Exception as e:
         raise
 
-def ssh_cmd(remote_cmd, control_path=None, allocate_tty=False):
+def ssh_cmd(remote_cmd, timeout=None, allocate_tty=False, capture_output=False):
     """Run a remote command over SSH."""
     base = ["ssh"]
-    if control_path:
-        base += ["-o", f"ControlPath={control_path}"]
     if allocate_tty:
         base.append("-t")
-    base += [args.target, remote_cmd]
-    return run(base, verbose=args.verbose)
+    base += [ARGS.target, remote_cmd]
+    return run(base, timeout=timeout, capture_output=capture_output, verbose=ARGS.verbose)
+
+# === Execution functions ===
+
+def cleanup():
+    """Cleanup everything left behind"""
+    if CONTROLMASTER_ACTIVE:
+        print(f"{Fore.CYAN}[⌘_⌘] Closing ControlMaster session...{Style.RESET_ALL}")
+        run_no_loop(["ssh", "-O", "exit", ARGS.target], verbose=ARGS.verbose)
+
+    run_no_loop(["tmux", "setw", "automatic-rename", "on"], verbose=ARGS.verbose)
+    sys.exit(0)
 
 def get_control_path(config):
     """Get path to ControlMaster file for this target."""
     return os.path.expanduser(f"~/.ssh/cm_socket/{config.user}@{config.host}:{config.port}")
 
-def control_check():
+def controlmaster_check():
     """Check if ControlMaster is active for this target."""
-    try:
-        run(["ssh", "-O", "check", args.target], capture_output=True, verbose=args.verbose)
+    res = run(["ssh", "-O", "check", ARGS.target], check=False, capture_output=True, verbose=ARGS.verbose)
+    if res.returncode == 0:
         return True
-    except subprocess.CalledProcessError:
+    else:
         return False
 
-def open_control_master(control_path):
+def open_control_master(config):
     """Open ControlMaster in background."""
-    try:
-        os.makedirs(os.path.dirname(control_path), exist_ok=True)
-        run(["ssh", "-M", "-N", "-f", "-o", f"ControlPath={control_path}", args.target], verbose=args.verbose)
-        multiplexer_active = True
-    except subprocess.CalledProcessError:
-        print("[╥﹏╥] Failed to start SSH ControlMaster session.")
-        cleanup()
-        raise
+    control_path = get_control_path(config)
+    os.makedirs(os.path.dirname(control_path), exist_ok=True)
+
+    # Start master
+    res = run(["ssh", "-M", "-N", "-f", "-o", f"ControlPath={control_path}", f"{config.user}@{config.host}", "-p", str(config.port)], check=False)
+    if res.returncode != 0:
+        return False
+
+    return True
 
 def detect_config():
     """Check the local .ssh configuration to see which parameters will actually be used."""
     try:
-        result = run(["ssh", "-G", args.target], capture_output=True, verbose=args.verbose)
+        result = run(["ssh", "-G", ARGS.target], capture_output=True, verbose=ARGS.verbose)
         ssh_config = dict(
             line.strip().split(None, 1)
             for line in result.stdout.strip().splitlines()
             if " " in line
         )
         user = ssh_config.get("user", getpass.getuser()) # Second parameter = default
-        host = ssh_config.get("hostname", args.target) # Use full "hostname" instead of short "host"
+        host = ssh_config.get("hostname", ARGS.target) # Use full "hostname" instead of short "host"
         port = ssh_config.get("port", "22")
         return Config(user, host, port)
     except subprocess.CalledProcessError:
         # Fallback if parsing fails
-        if "@" in args.target:
-            user, host = args.target.split("@", 1)
+        if "@" in ARGS.target:
+            user, host = ARGS.target.split("@", 1)
             return Config(user, host, "22")
-        return Config(getpass.getuser(), args.target, "22")
+        return Config(getpass.getuser(), ARGS.target, "22")
 
-def can_rsync(host, username, multiplexer_active):
-    return (username == getpass.getuser()) and multiplexer_active
+def load_blacklist():
+    if BLACKLIST_FILE.exists():
+        return set(line.strip() for line in BLACKLIST_FILE.read_text().splitlines() if line.strip())
+    return set()
 
-def check_remote_tmux():
+def save_to_blacklist(entry):
+    with open(BLACKLIST_FILE, "a") as f:
+        f.write(entry + "\n")
+
+def nothing_found(command):
+    print(f"{Fore.YELLOW}[x.x] No {command}.{Style.RESET_ALL}")
+    return False
+
+def check_remote_command(command):
     try:
-        ssh_cmd("hash tmux")
-        print("----> Found remote tmux.")
-        return True
-    except subprocess.CalledProcessError:
-        return False
-
-def check_remote_screen():
-    """Check if screen is available on remote system."""
-    try:
-        ssh_cmd("hash screen")
-        print("----> Found remote screen.")
-        return True
-    except subprocess.CalledProcessError:
-        return False
+        result = ssh_cmd(f"hash {command}", timeout=1, capture_output=True)
+        if (result.stdout):
+            # hash has no output when command exists
+            return nothing_found(command)
+        else:
+            print(f"{Fore.GREEN}[^.^] Found remote {command}.{Style.RESET_ALL}")
+            return True
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return nothing_found(command)
 
 def rsync_remote_files():
     """Sync config files to remote target."""
     try:
-        print("[⌘_⌘] Syncing config files to remote...")
+        print(f"{Fore.CYAN}[⌘_⌘] Syncing config files to remote...{Style.RESET_ALL}")
         config_local = os.path.expandvars("$HOME/git/wsl-terminal-setup/Files/remote/.config.custom/")
-        config_remote = f"{args.target}:.config.custom/"
+        config_remote = f"{ARGS.target}:.config.custom/"
         terminfo_local = os.path.expandvars("$HOME/git/wsl-terminal-setup/Files/remote/.terminfo/")
-        terminfo_remote = f"{args.target}:.terminfo/"
-        if (args.verbose):
+        terminfo_remote = f"{ARGS.target}:.terminfo/"
+        if (ARGS.verbose):
             my_args="-rEtLzv"
         else:
             my_args="-rEtLz"
-        run(["rsync", my_args, "--delete", config_local, config_remote], verbose=args.verbose)
-        run(["rsync", my_args, "--delete", terminfo_local, terminfo_remote], verbose=args.verbose)
+        run(["rsync", my_args, "--delete", config_local, config_remote], verbose=ARGS.verbose)
+        run(["rsync", my_args, "--delete", terminfo_local, terminfo_remote], verbose=ARGS.verbose)
     except Exception:
-        print("[╥﹏╥] Failed to sync files to remote target!")
+        print(f"{Fore.RED}[╥﹏╥] Failed to sync files to remote target!{Style.RESET_ALL}")
         cleanup()
         raise
 
 def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
-    remote_cmd = "bash --rcfile $HOME/.config.custom/bash/.bashrc -i -c 'exit'"
-    try:
-        ssh_cmd(remote_cmd, allocate_tty=True)
-    except Exception:
-        print("[╥﹏╥] Failed to open ssh multiplexer session!")
+    cmd = ["ssh", "-t", ARGS.target, "bash --rcfile $HOME/.config.custom/bash/.bashrc -i"]
+    print(f"{Fore.CYAN}[⌘_⌘] Launching custom ssh environment...{Style.RESET_ALL}")
+    rename_tmux_window(ARGS.target)
+    res = run(cmd, check=False, verbose=ARGS.verbose)
+    if res.returncode != 0:
+        print(f"{Fore.RED}[╥﹏╥] Failed while trying to launch custom ssh environment!{Style.RESET_ALL}")
         cleanup()
-        raise
 
 def run_ssh():
     """Open simple ssh session with tty."""
-    run(["ssh", args.target], allocate_tty=True, verbose=args.verbose)
+    print(f"{Fore.CYAN}[⌘_⌘] Connecting via basic ssh...{Style.RESET_ALL}")
+    rename_tmux_window(ARGS.target)
+    res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
+    if res.returncode != 0:
+        print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
+        cleanup()
 
 # === Main Logic ===
 
@@ -191,36 +206,53 @@ def main():
         description=description,
     )
 
+    # For parser, action="store_true" will result in default value: FALSE when argument is unspecified.
     parser.add_argument("target", help="SSH target: [USER@]HOST[:PORT]")
     parser.add_argument("-v", "--verbose", action="store_true", help="Print commands before execution (like bash -x)")
-    global args
-    args = parser.parse_args()
-    if not args:
-        print("[╥﹏╥] Could not query script arguments.")
+    parser.add_argument("--transfer", action="store_true", help="Force transfer of config files to remote location, even for other users than local")
+    global ARGS
+    ARGS = parser.parse_args()
+    if not ARGS:
+        print(f"{Fore.RED}[╥﹏╥] Could not query script arguments.{Style.RESET_ALL}")
         cleanup()
 
-    run(["tmux", "rename-window", args.target], verbose=args.verbose)
+    # Ensure data dir exists
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    rename_tmux_window(f"Connecting...")
 
     config = detect_config()
-    control_path = get_control_path(config)
 
-    global multiplexer_active
-    multiplexer_active = control_check()
-    if not multiplexer_active:
-        print("[⌘_⌘] No active ControlMaster. Attempting to open one...")
-        open_control_master(control_path)
+    blacklist = load_blacklist()
+
+    if config.host in blacklist:
+        print(f"{Fore.YELLOW}[x.x] Host {config.host} previously blacklisted as no SSH ControlMaster in {BLACKLIST_FILE}{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}====> Remove with:{Fore.MAGENTA} sed -i '/{config.host}/d' {BLACKLIST_FILE}{Style.RESET_ALL}")
+        run_ssh()
+        cleanup()
+
+    global CONTROLMASTER_ACTIVE
+    CONTROLMASTER_ACTIVE = controlmaster_check()
+
+    # Trying to open ControlMaster...
+    if not CONTROLMASTER_ACTIVE:
+        print(f"{Fore.CYAN}[⌘_⌘] No active ControlMaster. Attempting to open one...{Style.RESET_ALL}")
+        CONTROLMASTER_ACTIVE = open_control_master(config)
 
     # Remote shell launcher logic
-    print("[~_⊙] Checking available remote terminal multiplexer...")
-    if ( check_remote_tmux() or check_remote_screen() ):
-        if ( config.user == os.getlogin() ):
-            rsync_remote_files()
+    print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
+    if ( check_remote_command("tmux") or check_remote_command("screen") ):
+        if ( ARGS.transfer == False and config.user != os.getlogin() ):
+            # Skip config transfer if force_transfer argument is false and user is not the same
+            print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer. Use --transfer to force transfer config...{Style.RESET_ALL}")
         else:
-            print(f"[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer...")
-        print("[⌘_⌘] Launching ssh multiplexer...")
+            rsync_remote_files()
         run_ssh_multiplexer()
     else:
-        print("[ಠ_ಠ] Falling back to basic ssh...")
+        CONTROLMASTER_ACTIVE = controlmaster_check()
+        if not CONTROLMASTER_ACTIVE:
+            print(f"{Fore.YELLOW}[x.x] Host {config.host} does not support SSH ControlMaster. Adding to {BLACKLIST_FILE}.{Style.RESET_ALL}")
+            save_to_blacklist(config.host)
         run_ssh()
 
     cleanup()

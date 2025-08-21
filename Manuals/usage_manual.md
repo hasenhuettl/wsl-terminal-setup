@@ -30,8 +30,8 @@ A modern terminal application that supports multiple tabs and shells.
 ### Hotkeys
 - `Ctrl + T`
   Open a new tab.
-- `Ctrl + Shift + Tab`
-  Navigate backwards between open tabs.
+- `Ctrl [+ Shift] + Tab`
+  Navigate between tabs.
 
 ---
 
@@ -46,8 +46,8 @@ This script was implemented and tested using WSL Ubuntu 20.04, 22.04, and 24.04.
 Tmux allows multiple terminal sessions to be accessed and controlled from a single window.
 
 ### Configuration
-- Config file located at `~/.tmux.conf`.
-- When using ssh (aliases to ssh=~/custom/myssh.sh) to connect to a remote machine, separate bindings are used, located at `~/custom/ssh/.tmux.conf`.
+- Config can be edited & applied with alias `trc`
+  - `trc` is my abbreviation for "tmux rc". See [the zsh section](#zsh) on how to override aliases.
 
 ### Hotkeys
 - `Ctrl + Shift + Left/Right Arrow`
@@ -58,7 +58,7 @@ Tmux allows multiple terminal sessions to be accessed and controlled from a sing
   Enter Tmux command mode on the host.
 - `Ctrl + a`
   Enter Tmux command mode on the remote machine.
-- In command mode, press `b` to create a new tab.
+- In command mode, press `c` to create a new tab.
 
 ---
 
@@ -67,7 +67,8 @@ Tmux allows multiple terminal sessions to be accessed and controlled from a sing
 Zsh is an extended shell with more powerful features than bash.
 
 ### Configuration
-- Config files located in `~/.config/zsh/`.
+- Config can be edited & applied with alias `zrc`
+  - I split some of the configs into multiple files. A neovim window should be opened, showing the different files in the folder. You can simply navigate with basic vim syntax (up/down, enter, quit via Escape -> ":" -> "q" -> Enter).
 
 ### Hotkeys
 - `Ctrl + Right/Left Arrow`
@@ -86,7 +87,7 @@ Zsh is an extended shell with more powerful features than bash.
 An improved version of Vim with better extensibility and configuration.
 
 ### Configuration
-- Config files located in `~/.config/nvim`.
+- Config can be edited & applied with alias `nrc`
 
 ### Features
 - Supports most Vim commands.
@@ -102,4 +103,23 @@ An improved version of Vim with better extensibility and configuration.
 
 ---
 
+## Custom SSH behaviour
+
+The ssh command is aliased to run $HOME/scripts/myssh.py. You can use either `ussh` or `\ssh` to run standard ssh.
+
+### Usage
+- Ensure remote system has required packages installed (e.g. rsync, curl, tmux, zsh -> refer to Install/Bash/install_packages.sh)
+- View available parameters via `ssh --help`
+- Use standard `ssh [username@]host[:port]` to connect
+
+### Features
+- Synchronize configuration files for neovim, tmux, zsh, etc. to remote system (Folder: "$HOME/.config.custom"), if either:
+  - Username on host and remote is the same
+  - `--transfer` parameter is provided to force file transfer. **(THIS WILL ALWAYS OVERWRITE REMOTE FOLDER "$HOME/.config.custom" AND "$HOME/.terminfo"!)**
+- Automatically creates a new terminal multiplexer session, either tmux or screen (if supported by remote system)
+- SSH session multiplexing via ControlMaster (if supported by remote system)
+  - Reuse same connection (only input remote password once)
+  - SSH session restore with tmux (re-open used remote tabs when host crashes)
+
+---
 

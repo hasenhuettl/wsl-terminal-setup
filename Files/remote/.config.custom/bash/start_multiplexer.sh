@@ -31,7 +31,7 @@ start_screen () {
 }
 
 start_tmux () {
-  # Only run if not already inside tmux & interactive session (Safeguard for infinite shell opening loop)
+  # Only run if session is interactive, and not already inside tmux (Safeguard for infinite shell opening loop)
   if [[ -z "$TMUX" ]]; then
     exec tmux -f $TMUX_CONF new-session -A -s "$USER@$(hostname -s)"
   else

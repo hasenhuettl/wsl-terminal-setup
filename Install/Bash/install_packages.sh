@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Packages
 basic_tools="curl tar"
-useful_tools="tldr wget git gh"
+useful_tools="wget git gh"
 terminal_handling="tmux bash zsh rsync"
 neovim_dependencies="fzf fd-find ripgrep luarocks"
 

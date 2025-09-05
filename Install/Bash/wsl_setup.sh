@@ -32,7 +32,7 @@ sudo sed -i "s/$oldhostname/$newhostname/g" /etc/hosts # Set new hostname for lo
 sudo sed -i 's/session    optional   pam_motd.so/#session    optional   pam_motd.so/' /etc/pam.d/login # Disable Ubuntu Message of the day
 
 sudo locale-gen --purge en_US.UTF-8
-echo -e 'LANG="en_US.UTF-8"\nLANGUAGE="en_US:en"\n' | sudo tee /etc/default/locale
+echo -e 'LANG=en_US.UTF-8\nLANGUAGE=en_US:en\n' | sudo tee /etc/default/locale
 
 touch ~/.hushlogin # Disable ubuntu motd, since this would be overwritten anyway
 

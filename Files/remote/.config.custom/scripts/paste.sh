@@ -4,3 +4,5 @@ oemcp=$(reg.exe query "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Nls\\CodePage" 
 chcp.com $oemcp > /dev/null
 /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command Get-Clipboard | tr -d "\r" | sed -z "\$ s/\n\$//" | tmux load-buffer -
 chcp.com 65001 > /dev/null
+tmux choose-buffer
+

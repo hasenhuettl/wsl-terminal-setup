@@ -45,9 +45,6 @@ ARGS = None
 
 # === Helper functions ===
 
-def rename_tmux_window(text):
-    run(["tmux", "rename-window", text], verbose=ARGS.verbose)
-
 def log_cmd(cmd):
     print(f"+ {' '.join(shlex.quote(str(c)) for c in cmd)}")
 
@@ -89,6 +86,7 @@ def cleanup():
         run_no_loop(["ssh", "-O", "exit", ARGS.target], verbose=ARGS.verbose)
 
     run_no_loop(["tmux", "setw", "automatic-rename", "on"], verbose=ARGS.verbose)
+    run_no_loop(["tmux", "set-option", "-w", "@ssh-connected", ""], verbose=ARGS.verbose) # Set ssh-connected to null, and therefore enable local keybinds
     sys.exit(0)
 
 def get_control_path(config):
@@ -183,7 +181,7 @@ def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
     cmd = ["ssh", "-t", ARGS.target, "bash --rcfile $HOME/.config.custom/bash/.bashrc -i"]
     print(f"{Fore.CYAN}[⌘_⌘] Launching custom ssh environment...{Style.RESET_ALL}")
-    rename_tmux_window(ARGS.target)
+    run(["tmux", "set-option", "-w", "@ssh-connected", "1"], verbose=ARGS.verbose) # Disables local keybinds to not interfere with remote bindings
     res = run(cmd, check=False, verbose=ARGS.verbose)
     if res.returncode != 0:
         print(f"{Fore.RED}[╥﹏╥] Failed while trying to launch custom ssh environment!{Style.RESET_ALL}")
@@ -192,7 +190,6 @@ def run_ssh_multiplexer():
 def run_ssh():
     """Open simple ssh session with tty."""
     print(f"{Fore.CYAN}[⌘_⌘] Connecting via basic ssh...{Style.RESET_ALL}")
-    rename_tmux_window(ARGS.target)
     res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
     if res.returncode != 0:
         print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
@@ -219,7 +216,7 @@ def main():
     # Ensure data dir exists
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    rename_tmux_window(f"Connecting...")
+    run(["tmux", "rename-window", f"🔒 {ARGS.target}"], verbose=ARGS.verbose)
 
     config = detect_config()
 

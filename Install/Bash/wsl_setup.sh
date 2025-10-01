@@ -12,19 +12,12 @@ newhostname="$(cmd.exe /C hostname | tr -d '\n' | tr -d '\r')-wsl" # Generate "H
 sudo truncate -s 0 /etc/wsl.conf
 sudo truncate -s 0 /etc/resolv.conf
 
-echo -e "[boot]" | sudo tee -a /etc/wsl.conf
-echo -e "systemd=true" | sudo tee -a /etc/wsl.conf # Enable systemd
-
 echo -e "[network]" | sudo tee -a /etc/wsl.conf
 echo -e "hostname=${newhostname}" | sudo tee -a /etc/wsl.conf # Set hostname
 echo -e "generateHosts=false" | sudo tee -a /etc/wsl.conf # Disable WSL /etc/hosts override
 echo -e "generateResolvConf=false" | sudo tee -a /etc/wsl.conf # Disable WSL /etc/resolv.conf override
 
 # DNS setup
-echo -e "[Resolve]" | sudo tee -a /etc/systemd/resolved.conf
-echo -e "DNS=1.1.1.1 4.4.4.4" | sudo tee -a /etc/systemd/resolved.conf
-echo -e "Domains=domain.com" | sudo tee -a /etc/systemd/resolved.conf
-
 echo -e "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf # DNS 1
 echo -e "nameserver 4.4.4.4" | sudo tee -a /etc/resolv.conf # DNS 2
 

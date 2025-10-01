@@ -97,9 +97,16 @@ alias gdel='git branch -D'
 alias gm='git merge'
 alias ggc='git config --global'
 
-# Functions
+# System == LOCAL (NOT ssh)
 if [[ ! -v SSH_CLIENT ]]; then
   alias ssh='$HOME/scripts/myssh.py'
   alias ussh='/usr/bin/ssh'
+fi
+
+# System == WSL
+if [[ $WSL_DISTRO_NAME ]]; then
+  alias shut="cmd.exe /C wsl --shutdown"
+  alias lo="ssh $(cmd.exe /C hostname | tr -d '\n' | tr -d '\r')"
+  alias rick='powershell.exe /c start "https://www.youtube.com/watch?v=dQw4w9WgXcQ"'
 fi
 

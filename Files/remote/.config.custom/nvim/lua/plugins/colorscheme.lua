@@ -16,6 +16,12 @@ return {
     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })  -- Statusline
     vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "none" }) -- Inactive status line
     vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })  -- Tabline
+
+    -- -- Make diagnostic underlines squiggly and colorful!
+    -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = "Red" })
+    -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn",  { undercurl = true, sp = "Orange" })
+    -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo",  { undercurl = true, sp = "LightBlue" })
+    -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint",  { undercurl = true, sp = "LightGrey" })
   end,
 }
 

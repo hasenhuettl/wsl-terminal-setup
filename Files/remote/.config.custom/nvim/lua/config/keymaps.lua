@@ -46,6 +46,10 @@ keymap("n", "<A-k>", ":m .-2<CR>==", opts)
 keymap("i", "jk", "<ESC>", opts)
 keymap("i", "kj", "<ESC>", opts)
 
+-- Delete whole word in insert mode
+keymap("i", "<A-BS>", "<C-w>", opts) -- Backward word delete (Alt+Backspace)
+keymap("i", "<A-Del>", "<C-o>dw", opts) -- Forward word delete (Alt+Delete)
+
 -- Visual --
 -- Stay in indent mode
 keymap("v", "<", "<gv^", opts)

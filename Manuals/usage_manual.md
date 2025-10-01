@@ -103,9 +103,10 @@ An improved version of Vim with better extensibility and configuration.
 ### Hotkeys
 - `Shift + i` to enter a paste-friendly insert mode that disables UI elements that could interfere with pasting text. Press `Escape` to exit this mode.
 - `Spacebar` (LEADER key for the snacks plugin) or `,` (LEADER key for Neovim) to display your shortcuts, e.g., save/quit with `, + w/q` instead of `:w/q`.
-- `.`, or `gcc` to comment/uncomment the current line based on filetype.
+- `gcc` to comment/uncomment the current line based on filetype.
 - Swap between files by pressing `-` to open the Oil file manager, or `Ctrl + n` / `Ctrl + p` to switch to next/previous file.
 - run `:Inspect` on an element to find out e.g. why the element is a different color, use `:help Command` to see what a command does
+- Language server: Hover over e.g. a function, then press `K` to hover docs, `gr` for references
 
 ---
 

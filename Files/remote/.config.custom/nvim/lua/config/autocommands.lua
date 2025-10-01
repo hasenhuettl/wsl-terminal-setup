@@ -107,7 +107,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Show notification when opening read-only file
 vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
-    if not vim.bo.modifiable or vim.bo.readonly then
+    if vim.bo.readonly and (not vim.bo.filetype == "oil") then
       vim.notify("Opened read-only file: " .. vim.fn.expand("%"), vim.log.levels.WARN, { title = "Read-Only" })
     end
   end,

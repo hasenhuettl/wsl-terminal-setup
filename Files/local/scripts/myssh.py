@@ -216,7 +216,7 @@ def main():
     # Ensure data dir exists
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    run(["tmux", "rename-window", f"🔒 {ARGS.target}"], verbose=ARGS.verbose)
+    run(["tmux", "rename-window", f"🔐 {ARGS.target}"], verbose=ARGS.verbose)
 
     config = detect_config()
 
@@ -239,7 +239,7 @@ def main():
     # Remote shell launcher logic
     print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
     if ( check_remote_command("tmux") or check_remote_command("screen") ):
-        if ( ARGS.transfer == False and config.user != os.getlogin() ):
+        if ( ARGS.transfer is False and config.user != os.environ.get("USER") ):
             # Skip config transfer if force_transfer argument is false and user is not the same
             print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer. Use --transfer to force transfer config...{Style.RESET_ALL}")
         else:

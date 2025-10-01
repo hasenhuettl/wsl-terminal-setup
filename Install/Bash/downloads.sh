@@ -33,9 +33,13 @@ if [ -e ".ssh.pre-wsl-terminal-setup" ]; then
   exit 1
 fi
 
-[ -e ".config.custom" ] && mv ".config.custom" ".config.custom.pre-wsl-terminal-setup"
-[ -e ".bashrc" ] && mv ".bashrc" ".bashrc.pre-wsl-terminal-setup"
-[ -e ".ssh" ] && mv ".ssh" ".ssh.pre-wsl-terminal-setup"
+for file in .config.custom .bashrc .ssh; do
+  # If file exists already
+  if [ -e "$file" ]; then
+    echo "Moving old $file to $file.pre-wsl-terminal-setup..."
+    mv "$file" "$file.pre-wsl-terminal-setup"
+  fi
+done
 
 # Create symlinks
 ln -s "$FOLDER/Files/local/.config.custom" ".config.custom"

@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import datetime
 import getpass
 import argparse
+import click
 import socket
 import textwrap # Text manipulation, e.g.: Remove any common leading whitespace from every line in text.
 from colorama import Fore, Back, Style # print in color
@@ -64,7 +65,7 @@ def run(cmd, check=True, capture_output=False, text=True, timeout=None, verbose=
             log_cmd(cmd)
         return subprocess.run(cmd, check=check, capture_output=capture_output, text=text, timeout=timeout, **kwargs)
     except KeyboardInterrupt:
-        print(f"\n✋ Process interrupted by user.")
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
         cleanup()
     except Exception as e:
         raise
@@ -106,10 +107,32 @@ def open_control_master(config):
     control_path = get_control_path(config)
     os.makedirs(os.path.dirname(control_path), exist_ok=True)
 
-    # Start master
-    res = run(["ssh", "-M", "-N", "-f", "-o", f"ControlPath={control_path}", f"{config.user}@{config.host}", "-p", str(config.port)], check=False)
-    if res.returncode != 0:
-        return False
+    try:
+        res = run(
+            [
+                "ssh", "-M", "-N", "-f",
+                "-o", f"ControlPath={control_path}",
+                f"{config.user}@{config.host}",
+                "-p", str(config.port)
+            ],
+            check=False,
+            capture_output=True,
+            verbose=ARGS.verbose
+        )
+        if res.returncode != 0:
+            print(f"{Fore.RED}[╥﹏╥] SSH command failed!{Style.RESET_ALL}")
+            print(f"{Fore.RED}{res.stderr}{Style.RESET_ALL}")
+            print(f"Continue with script? (y/n):")
+            while True:
+                ch = click.getchar().lower()
+                if ch == "y":
+                    return False
+                elif ch == "n":
+                    print(f"{Fore.RED}[╥﹏╥] Exiting...{Style.RESET_ALL}")
+                    cleanup()
+    except KeyboardInterrupt:
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
+        cleanup()
 
     return True
 
@@ -177,22 +200,52 @@ def rsync_remote_files():
         cleanup()
         raise
 
+def prompt_blacklist(config):
+    print(f"{Fore.YELLOW}[x.x] Host '{config.host}' does not appear to support SSH ControlMaster. Consider adding it to blacklist file {BLACKLIST_FILE}.{Style.RESET_ALL}")
+    print(f"Do you want to add '{config.host}' in blacklist file so further connections only use basic ssh? (y/n): ")
+
+    try:
+        while True:
+            ch = click.getchar().lower()
+            if ch == "y":
+                save_to_blacklist(config.host)
+                print(f"\n{Fore.GREEN}[✓] Host {config.host} added to {BLACKLIST_FILE}.{Style.RESET_ALL}")
+                return True
+            elif ch == "n":
+                print(f"\n{Fore.MAGENTA}[~] Skipping blacklist for {config.host}.{Style.RESET_ALL}")
+                return False
+    except KeyboardInterrupt:
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
+        cleanup()
+
 def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
     cmd = ["ssh", "-t", ARGS.target, "bash --rcfile $HOME/.config.custom/bash/.bashrc -i"]
     print(f"{Fore.CYAN}[⌘_⌘] Launching custom ssh environment...{Style.RESET_ALL}")
-    run(["tmux", "set-option", "-w", "@ssh-connected", "1"], verbose=ARGS.verbose) # Disables local keybinds to not interfere with remote bindings
-    res = run(cmd, check=False, verbose=ARGS.verbose)
-    if res.returncode != 0:
-        print(f"{Fore.RED}[╥﹏╥] Failed while trying to launch custom ssh environment!{Style.RESET_ALL}")
+
+    # Disables local keybinds to not interfere with remote bindings
+    run(["tmux", "set-option", "-w", "@ssh-connected", "1"], verbose=ARGS.verbose)
+
+    try:
+        res = run(cmd, check=False, verbose=ARGS.verbose)
+        if res.returncode != 0:
+            print(f"{Fore.RED}[╥﹏╥] Failed while trying to launch custom ssh environment!{Style.RESET_ALL}")
+    except KeyboardInterrupt:
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
+    finally:
         cleanup()
 
 def run_ssh():
     """Open simple ssh session with tty."""
     print(f"{Fore.CYAN}[⌘_⌘] Connecting via basic ssh...{Style.RESET_ALL}")
-    res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
-    if res.returncode != 0:
-        print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
+
+    try:
+        res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
+        if res.returncode != 0:
+            print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
+    except KeyboardInterrupt:
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
+    finally:
         cleanup()
 
 # === Main Logic ===
@@ -224,9 +277,8 @@ def main():
 
     if config.host in blacklist:
         print(f"{Fore.YELLOW}[x.x] Host {config.host} previously blacklisted as no SSH ControlMaster in {BLACKLIST_FILE}{Style.RESET_ALL}")
-        print(f"{Fore.YELLOW}====> Remove with:{Fore.MAGENTA} sed -i '/{config.host}/d' {BLACKLIST_FILE}{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}====> Remove with:{Fore.MAGENTA} sed -i '/^{config.host}$/d' {BLACKLIST_FILE}{Style.RESET_ALL}")
         run_ssh()
-        cleanup()
 
     global CONTROLMASTER_ACTIVE
     CONTROLMASTER_ACTIVE = controlmaster_check()
@@ -235,6 +287,11 @@ def main():
     if not CONTROLMASTER_ACTIVE:
         print(f"{Fore.CYAN}[⌘_⌘] No active ControlMaster. Attempting to open one...{Style.RESET_ALL}")
         CONTROLMASTER_ACTIVE = open_control_master(config)
+        if not CONTROLMASTER_ACTIVE:
+            prompt_blacklist(config)
+            blacklist = load_blacklist()
+            if config.host in blacklist:
+                run_ssh()
 
     # Remote shell launcher logic
     print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
@@ -248,8 +305,7 @@ def main():
     else:
         CONTROLMASTER_ACTIVE = controlmaster_check()
         if not CONTROLMASTER_ACTIVE:
-            print(f"{Fore.YELLOW}[x.x] Host {config.host} does not support SSH ControlMaster. Adding to {BLACKLIST_FILE}.{Style.RESET_ALL}")
-            save_to_blacklist(config.host)
+            prompt_blacklist(config)
         run_ssh()
 
     cleanup()

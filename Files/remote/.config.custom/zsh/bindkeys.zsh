@@ -24,6 +24,12 @@ bindkey -s "^[ä" ''
 bindkey -s "^[ö" ''
 bindkey -s "^[ü" ''
 
+# Enable reverse search
+bindkey "^R" history-incremental-pattern-search-backward
+
+# Use Escape + . OR Alt + . to insert the last argument in previous commands
+bindkey '\e.' insert-last-word
+
 # Let SPACE expand history expressions like !!, !$, etc.
 bindkey ' ' magic-space
 

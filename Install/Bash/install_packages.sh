@@ -20,7 +20,11 @@ echoandrun() {
 get_distro() {
   if [ -f /etc/os-release ]; then
     . /etc/os-release
-    echo "$ID"
+    if [ -n "$ID" ]; then
+      echo "$ID"
+    else
+      echo "unknown"
+    fi
   else
     echo "unknown"
   fi
@@ -46,6 +50,7 @@ install_deps() {
 
   case "$DISTRO" in
     ubuntu | debian)
+      echo "System is ubuntu/debian."
       echo "Updating cache..."
 
       echoandrun sudo apt update
@@ -82,6 +87,7 @@ install_deps() {
       ;;
 
     centos | rhel)
+      echo "System is centos/rhel."
       echo "Checking available nodejs version..."
 
       NODE_CANDIDATE="$(yum info nodejs 2>/dev/null | grep Version | awk '{print $3}')"
@@ -123,6 +129,9 @@ install_deps() {
 }
 
 install_neovim() {
+
+  cd ~
+
   echo "Checking glibc version..."
 
   # (... ||:) = pipefail fix https://unix.stackexchange.com/questions/582844/how-to-suppress-sigpipe-in-bash/582850#582850
@@ -132,7 +141,7 @@ install_neovim() {
 
   if [ "$major" -lt 2 ] || { [ "$major" -eq 2 ] && [ "$minor" -lt 34 ]; }; then
     echo "glibc version < 2.34 → using Neovim v0.11.2"
-    neovim_url="https://github.com/neovim/neovim-releases/releases/download/v0.11.2/nvim-linux-x86_64.tar.gz"
+    neovim_url="https://github.com/neovim/neovim-releases/releases/download/v0.11.4/nvim-linux-x86_64.tar.gz"
   else
     echo "glibc version >= 2.34 → using latest Neovim release"
     neovim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
@@ -145,9 +154,9 @@ install_neovim() {
   echoandrun sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
   echoandrun rm nvim-linux-x86_64.tar.gz
 
-  echoandrun sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+  echoandrun sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
 
-  echo "✅ Dependencies installed at /opt/nvim and linked to /usr/local/bin/nvim"
+  echo "✅ Dependencies installed at /opt/nvim-linux-x86_64 and linked to /usr/local/bin/nvim"
   nvim --version
 }
 

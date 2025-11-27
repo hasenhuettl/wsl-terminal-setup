@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "🎄 Merry Christmas, $(whoami)! 🎅"
+echo "🎄 Merry Christmas! 🎅"
 
 COLOR_GREEN=$'%F{2}'
 COLOR_RED=$'%F{1}'

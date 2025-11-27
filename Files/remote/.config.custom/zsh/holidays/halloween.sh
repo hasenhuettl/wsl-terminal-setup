@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "🎃 Spooky Halloween, mortal $(whoami)! 💀"
+echo "🎃 Spooky Halloween! 💀 "
 
 COLOR_ORANGE=$'%F{208}'
 COLOR_PURPLE=$'%F{93}'

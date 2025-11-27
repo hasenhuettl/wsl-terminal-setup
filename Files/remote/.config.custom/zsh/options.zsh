@@ -18,7 +18,7 @@ if hash nvim > /dev/null 2>&1; then
   export VISUAL=nvim
   export EDITOR="$VISUAL"
 else
-  echo "No Neovim here... You can install dependencies via 'install_packages'."
+  echo "No Neovim here... You can install it via 'install_packages' command."
 fi
 
 # Tab completion

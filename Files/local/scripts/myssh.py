@@ -8,9 +8,9 @@ from pathlib import Path
 from datetime import datetime
 import getpass
 import argparse
-import click
 import socket
 import textwrap # Text manipulation, e.g.: Remove any common leading whitespace from every line in text.
+import click
 from colorama import Fore, Back, Style # print in color
 
 # === Config ===
@@ -32,6 +32,7 @@ description=textwrap.dedent('''\
 # === Classes ===
 
 class Config:
+    """Basic info about remote host"""
     def __init__(self, user, host, port):
         self.user = user
         self.host = host
@@ -43,10 +44,13 @@ DATA_DIR = Path.home() / ".local" / "share" / "ssh"
 BLACKLIST_FILE = DATA_DIR / "hosts_without_multiplexing.txt"
 CONTROLMASTER_ACTIVE = False
 ARGS = None
+SESSION = None
+WINDOW = None
 
 # === Helper functions ===
 
 def log_cmd(cmd):
+    """Output string array as string"""
     print(f"+ {' '.join(shlex.quote(str(c)) for c in cmd)}")
 
 def run_no_loop(cmd, verbose=False, **kwargs):
@@ -86,9 +90,17 @@ def cleanup():
         print(f"{Fore.CYAN}[⌘_⌘] Closing ControlMaster session...{Style.RESET_ALL}")
         run_no_loop(["ssh", "-O", "exit", ARGS.target], verbose=ARGS.verbose)
 
-    run_no_loop(["tmux", "setw", "automatic-rename", "on"], verbose=ARGS.verbose)
-    run_no_loop(["tmux", "set-option", "-w", "@ssh-connected", ""], verbose=ARGS.verbose) # Set ssh-connected to null, and therefore enable local keybinds
+    target_window = f"{SESSION}:{WINDOW}"
+    # Re-enable automatic window renaming
+    run_no_loop(["tmux", "setw", "-t", target_window, "automatic-rename", "on"], verbose=ARGS.verbose)
+    # Set ssh-connected to null, and therefore enable local keybinds
+    run_no_loop(["tmux", "set", "-t", target_window, "-w", "@ssh-connected", ""], verbose=ARGS.verbose)
     sys.exit(0)
+
+def tmux_rename_window(text):
+    """Set text from param as name of window"""
+    target_window = f"{SESSION}:{WINDOW}"
+    run(["tmux", "rename-window", "-t", target_window, text], verbose=ARGS.verbose)
 
 def get_control_path(config):
     """Get path to ControlMaster file for this target."""
@@ -120,6 +132,7 @@ def open_control_master(config):
             verbose=ARGS.verbose
         )
         if res.returncode != 0:
+            tmux_rename_window("[╥﹏╥] Error!")
             print(f"{Fore.RED}[╥﹏╥] SSH command failed!{Style.RESET_ALL}")
             print(f"{Fore.RED}{res.stderr}{Style.RESET_ALL}")
             print(f"Continue with script? (y/n):")
@@ -157,19 +170,23 @@ def detect_config():
         return Config(getpass.getuser(), ARGS.target, "22")
 
 def load_blacklist():
+    """Load blacklist file"""
     if BLACKLIST_FILE.exists():
         return set(line.strip() for line in BLACKLIST_FILE.read_text().splitlines() if line.strip())
     return set()
 
 def save_to_blacklist(entry):
+    """Write host to blacklist"""
     with open(BLACKLIST_FILE, "a") as f:
         f.write(entry + "\n")
 
 def nothing_found(command):
+    """Print that command did not exist"""
     print(f"{Fore.YELLOW}[x.x] No {command}.{Style.RESET_ALL}")
     return False
 
 def check_remote_command(command):
+    """Check if command 'hash $command' is available on remote ssh session"""
     try:
         result = ssh_cmd(f"hash {command}", timeout=1, capture_output=True)
         if (result.stdout):
@@ -201,6 +218,7 @@ def rsync_remote_files():
         raise
 
 def prompt_blacklist(config):
+    """Ask user wheter to add current host to blacklist"""
     print(f"{Fore.YELLOW}[x.x] Host '{config.host}' does not appear to support SSH ControlMaster. Consider adding it to blacklist file {BLACKLIST_FILE}.{Style.RESET_ALL}")
     print(f"Do you want to add '{config.host}' in blacklist file so further connections only use basic ssh? (y/n): ")
 
@@ -227,6 +245,7 @@ def run_ssh_multiplexer():
     run(["tmux", "set-option", "-w", "@ssh-connected", "1"], verbose=ARGS.verbose)
 
     try:
+        tmux_rename_window(f"🔐 {ARGS.target}")
         res = run(cmd, check=False, verbose=ARGS.verbose)
         if res.returncode != 0:
             print(f"{Fore.RED}[╥﹏╥] Failed while trying to launch custom ssh environment!{Style.RESET_ALL}")
@@ -240,6 +259,7 @@ def run_ssh():
     print(f"{Fore.CYAN}[⌘_⌘] Connecting via basic ssh...{Style.RESET_ALL}")
 
     try:
+        tmux_rename_window(f"🔐 {ARGS.target}")
         res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
         if res.returncode != 0:
             print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
@@ -251,6 +271,7 @@ def run_ssh():
 # === Main Logic ===
 
 def main():
+    """Main logic"""
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=description,
@@ -266,10 +287,16 @@ def main():
         print(f"{Fore.RED}[╥﹏╥] Could not query script arguments.{Style.RESET_ALL}")
         cleanup()
 
+    global SESSION
+    SESSION = run(["tmux", "display-message", "-p", "#S"], text=True, check=False, capture_output=True, verbose=ARGS.verbose).stdout.strip()
+
+    global WINDOW
+    WINDOW = run(["tmux", "display-message", "-p", "#I"], text=True, check=False, capture_output=True, verbose=ARGS.verbose).stdout.strip()
+
     # Ensure data dir exists
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    run(["tmux", "rename-window", f"🔐 {ARGS.target}"], verbose=ARGS.verbose)
+    tmux_rename_window("🔐 Connecting...")
 
     config = detect_config()
 
@@ -296,7 +323,7 @@ def main():
     # Remote shell launcher logic
     print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
     if ( check_remote_command("tmux") or check_remote_command("screen") ):
-        if ( ARGS.transfer is False and config.user != os.environ.get("USER") ):
+        if (ARGS.transfer is False and config.user != os.environ.get("USER") ):
             # Skip config transfer if force_transfer argument is false and user is not the same
             print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer. Use --transfer to force transfer config...{Style.RESET_ALL}")
         else:

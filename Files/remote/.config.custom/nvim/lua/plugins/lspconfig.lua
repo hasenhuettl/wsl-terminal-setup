@@ -1,6 +1,11 @@
 -- LSP, Mason, Autocompletion
 return {
   {
+    -- skip plugin if nodejs is not installed
+    cond = function()
+      return vim.fn.executable("node") == 1
+    end,
+
     "neovim/nvim-lspconfig",
     dependencies = {
       -- Mason for managing servers

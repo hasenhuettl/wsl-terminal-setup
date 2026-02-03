@@ -116,7 +116,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- Toggle indent-blankline and notify in insert mode
 vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
-    if vim.o.paste then vim.cmd("IBLDisable") end
+    if vim.o.paste then
+      vim.cmd("IBLDisable")
+      vim.opt.list = false
+    end
     if vim.bo.readonly then vim.notify("This file is read-only", vim.log.levels.WARN) end
   end,
 })
@@ -124,6 +127,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
     vim.cmd("IBLEnable")
+    vim.opt.list = true
     vim.cmd("set nopaste number scl=yes")
   end,
 })

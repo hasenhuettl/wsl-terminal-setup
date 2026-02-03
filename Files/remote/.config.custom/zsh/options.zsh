@@ -13,12 +13,17 @@ WORDCHARS='' # Consider these as part of a word (e.g.: / is not in here, so CTRL
 
 export GOPATH=$HOME/go # Default since Go 1.8
 
+# Save Windows Home directory path in linux format (/mnt/c/Users/$USER)
+if [ -n "$WSL_DISTRO_NAME" ]; then
+  export WINHOME=$(wslpath "$(cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')")
+fi
+
 # Set standard editor to nvim (if its installed)
 if hash nvim > /dev/null 2>&1; then
   export VISUAL=nvim
   export EDITOR="$VISUAL"
 else
-  echo "No Neovim here... You can install it via 'install_packages' command."
+  echo "No Neovim here... You can install it via 'install_packages' command. (RHEL: sudo dnf module reset nodejs && sudo dnf module enable nodejs:20 && install_packages)"
 fi
 
 # Tab completion

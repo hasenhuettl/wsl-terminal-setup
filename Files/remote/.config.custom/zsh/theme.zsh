@@ -1,21 +1,25 @@
 # Prompt styling
 function parse_git_branch() {
-  git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1] /p'
+  git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/ [\1]/p'
+}
+
+parse_git_dirty() {
+  git status --porcelain 2>/dev/null | grep -q . && echo "*"
 }
 
 # Prompt = text at beginning of terminal line
 # Color sheet: https://www.ditig.com/publications/256-colors-cheat-sheet
-COLOR_RESET=$'%f'
-COLOR_D_RED=$'%F{1}'
-COLOR_L_RED=$'%F{9}'
-COLOR_PURPLE=$'%F{5}'
-COLOR_TEAL=$'%F{6}'
-COLOR_PINK=$'%F{13}'
-COLOR_L_BLUE=$'%F{14}'
+RESET='%{%f%}'
+D_RED='%{%F{1}%}'
+L_RED='%{%F{9}%}'
+PURPLE='%{%F{5}%}'
+TEAL='%{%F{6}%}'
+PINK='%{%F{13}%}'
+L_BLUE='%{%F{14}%}'
 
 # %n=User, %m=hostname, %3=directory
 setopt PROMPT_SUBST
-export PROMPT='${COLOR_PURPLE}%n${COLOR_PINK}@${COLOR_TEAL}%m ${COLOR_L_RED}%3~ ${COLOR_L_BLUE}$(parse_git_branch)${COLOR_RESET}$ '
+export PROMPT='${PURPLE}%n${PINK}@${TEAL}%m ${L_RED}%3~${L_BLUE}$(parse_git_branch)${D_RED}$(parse_git_dirty)${RESET} $ '
 
 ## Echo CTRL+C => ^C
 #TRAPINT() {

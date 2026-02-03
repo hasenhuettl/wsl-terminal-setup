@@ -3,12 +3,12 @@
 set -euo pipefail
 
 # Packages
-basic_tools="curl tar"
-useful_tools="wget git"
-terminal_handling="tmux bash zsh rsync"
-neovim_dependencies="fzf fd-find ripgrep luarocks"
-neovim_dependencies_lsp="nodejs"
-#neovim_dependencies_lsp="nodejs python3-venv"
+basic_tools=(curl tar)
+useful_tools=(wget git)
+terminal_handling=(tmux bash zsh rsync)
+neovim_dependencies=(fzf fd-find ripgrep luarocks)
+neovim_dependencies_lsp=(nodejs)
+#neovim_dependencies_lsp=(nodejs python3-venv)
 nodejs_min_version=18
 
 echoandrun() {
@@ -61,7 +61,7 @@ install_deps() {
 
       if [ -n "$NODE_CANDIDATE" ] && [ "$NODE_CANDIDATE" != "(none)" ]; then
         NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
-        if check_nodejs_version $NODE_MAJOR; then
+        if check_nodejs_version "$NODE_MAJOR"; then
           NODE_OK=true
         else
           echo "⚠️ Node.js $NODE_CANDIDATE lower than $nodejs_min_version. Skipping node & language server installation."
@@ -73,13 +73,13 @@ install_deps() {
       echo "Installing dependencies..."
 
       echoandrun sudo apt install -y \
-        $basic_tools \
-        $useful_tools \
-        $terminal_handling \
-        $neovim_dependencies
+        "${basic_tools[@]}" \
+        "${useful_tools[@]}" \
+        "${terminal_handling[@]}" \
+        "${neovim_dependencies[@]}"
 
       if [ "$NODE_OK" = true ]; then
-        echoandrun sudo apt install -y $neovim_dependencies_lsp
+        echoandrun sudo apt install -y "${neovim_dependencies_lsp[@]}"
         echo "✅ Successfully installed node & language server!"
       else
         echo "Skipped node & language server."
@@ -94,7 +94,7 @@ install_deps() {
 
       if [ -n "$NODE_CANDIDATE" ]; then
         NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
-        if check_nodejs_version $NODE_MAJOR; then
+        if check_nodejs_version "$NODE_MAJOR"; then
           NODE_OK=true
         else
           echo "⚠️ Node.js $NODE_CANDIDATE lower than $nodejs_min_version. Skipping node & language server installation."
@@ -106,13 +106,13 @@ install_deps() {
       echo "Installing dependencies..."
 
       echoandrun sudo yum install -y \
-        $basic_tools \
-        $useful_tools \
-        $terminal_handling \
-        $neovim_dependencies
+        "${basic_tools[@]}" \
+        "${useful_tools[@]}" \
+        "${terminal_handling[@]}" \
+        "${neovim_dependencies[@]}"
 
       if [ "$NODE_OK" = true ]; then
-        echoandrun sudo yum install -y $neovim_dependencies_lsp
+        echoandrun sudo yum install -y "${neovim_dependencies_lsp[@]}"
         echo "✅ Successfully installed node & language server!"
       else
         echo "Skipped node & language server."
@@ -140,8 +140,8 @@ install_neovim() {
   minor="$(echo "$glibc_version" | cut -d. -f2)"
 
   if [ "$major" -lt 2 ] || { [ "$major" -eq 2 ] && [ "$minor" -lt 34 ]; }; then
-    echo "glibc version < 2.34 → using Neovim v0.11.2"
-    neovim_url="https://github.com/neovim/neovim-releases/releases/download/v0.11.4/nvim-linux-x86_64.tar.gz"
+    echo "glibc version < 2.34 → using best-effort, unsupported build Neovim from https://github.com/neovim/neovim-releases"
+    neovim_url="https://github.com/neovim/neovim-releases/releases/download/stable/nvim-linux-x86_64.tar.gz"
   else
     echo "glibc version >= 2.34 → using latest Neovim release"
     neovim_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
@@ -150,7 +150,6 @@ install_neovim() {
   echo "Installing Neovim..."
 
   curl -LO "$neovim_url"
-  echoandrun sudo rm -rf /opt/nvim
   echoandrun sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
   echoandrun rm nvim-linux-x86_64.tar.gz
 

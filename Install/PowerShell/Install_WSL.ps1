@@ -3,28 +3,29 @@
 # Imports
 # -------------------------------------
 
-# Root Path for WSL-Setup
-$rootPath = $PSScriptRoot | split-path -parent | split-path -parent
+	# Root Path for WSL-Setup
+	$rootPath = $PSScriptRoot | split-path -parent | split-path -parent
 
-# Convert Windows-style path to Linux-style path
-$linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
-
-# Bash script paths
-$wsl_setup_script = "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
+	# Convert Windows-style path to Linux-style path
+	$linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
 
 # Import functions
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
 . (Join-Path $rootPath '\Config\config.ps1')
 
-bash $wsl_setup_script
-exit
-
 Clear-Any-Restart
+
+# Check if the specific distribution is already installed
+$distroInstalled = (wsl --list --quiet) -contains "$distribution"
+
+if ($distroInstalled) {
+	param($Step="Setup")
+}
 
 # Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
-	Write-Host "Installing WSL..."
+	Write-Host "Installing WSL distribution $distribution..."
 
 	wsl --install --distribution "$distribution"
 
@@ -36,18 +37,23 @@ if (Should-Run-Step "Setup") {
 	Write-Host "Updating WSL..."
 	wsl --update
 
-	winget install Microsoft.WindowsTerminal
+	Write-Host "Installing Windows Terminal..."
+	winget install Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements
 
+	Write-Host "Installing 7zip for PowerShell..."
+	Install-Module -Name 7Zip4Powershell -Force -Scope CurrentUser
+
+	Write-Host "Installing Nerf Font..."
 	# Define variables
-	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
-	$destination = "$env:TEMP\JetBrainsMono.zip"
+	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
+	$destination = "$env:TEMP\JetBrainsMono.tar.xz"
 	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
 
 	# Download the font zip
 	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
 
 	# Extract it
-	Expand-Archive -Path $destination -DestinationPath $extractPath -Force
+	Expand-7Zip -ArchiveFileName "$env:TEMP\JetBrainsMono.tar.xz" -TargetPath "$env:TEMP\JetBrainsMonoFonts"
 
 	# Install fonts
 	$fonts = Get-ChildItem -Path $extractPath -Include *.ttf -Recurse
@@ -57,12 +63,21 @@ if (Should-Run-Step "Setup") {
 			-Name $font.BaseName -PropertyType String -Value $font.Name -Force | Out-Null
 	}
 
-	Write-Host "JetBrainsMono Nerd Font installed successfully!"
+	Write-Host "Nerd Font installed successfully!" -ForegroundColor Green
 
-	# Start Menu -> Launch Windows Terminal:
+	# Edit Windows Terminal Settings:
 
-	# Edit Settings on top of windows terminal v Symbol:
-	# TODO: import windows Terminal settings.json automatically
+	Write-Host "Copying Windows Terminal Settings..."
+
+	# Get the current user's Windows Terminal settings path
+	$terminalSettingsPath = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+
+	# Define your source settings file path (adjust this to your actual path)
+	$sourceSettingsPath = "$linuxStyleRootPath/Install/WinTerminal/settings.json"
+
+	Copy-Item $sourceSettingsPath $terminalSettingsPath -Force
+	Write-Host "Successfully copied settings to Windows Terminal" -ForegroundColor Green
+
 	# Set default profile to ubuntu guid
 	# Change hotkeys for copy as well as insert
 
@@ -70,14 +85,17 @@ if (Should-Run-Step "Setup") {
 	# Start Menu: Start ubuntu
 	# Use your windows username and some other password
 
-
+	bash "$linuxStyleRootPath/Install/WinTerminal/settings.json"
+	#bash /mnt/c/Scripts/Bash/wsl_setup.sh
 	# Ubuntu shell
 
 	Write-Host "Running APT update and install..."
-	bash /mnt/c/Scripts/Bash/wsl_setup.sh
+	bash "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
+	#bash /mnt/c/Scripts/Bash/wsl_setup.sh
 
 	Write-Host "Running Bash Scripts..."
-	bash /mnt/c/Scripts/Bash/downloads.sh
+	bash "$linuxStyleRootPath/Install/Bash/downloads.sh"
+	#bash /mnt/c/Scripts/Bash/downloads.sh
 
 	# Restart WSL
 	wsl --shutdown
@@ -88,9 +106,4 @@ if (Should-Run-Step "Setup") {
 	# Installation successfully finished!
 
 }
-
-if (Should-Run-Step "C") {
-	Write-Host "Option C..."
-}
-
 

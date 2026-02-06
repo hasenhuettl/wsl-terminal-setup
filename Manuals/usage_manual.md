@@ -4,9 +4,9 @@ This manual provides a quick overview and useful commands/configurations for the
 
 ---
 
-## WSL (Windows Subsystem for Linux)
+## WSL
 
-WSL allows you to run a Linux environment directly on Windows without the need for a virtual machine.
+WSL (Windows Subsystem for Linux) allows you to run a Linux environment directly on Windows without the need for a virtual machine.
 
 ---
 
@@ -23,9 +23,9 @@ You can manage WSL distributions and sessions directly from Windows Command Prom
 
 ---
 
-## Windows Terminal (WinTerminal)
+## WinTerminal
 
-A modern terminal application that supports multiple tabs and shells.
+WinTerminal (Windows Terminal) is a terminal application for managing supports multiple tabs and shells in Windows.
 
 ### Hotkeys
 - `Ctrl + T`
@@ -41,9 +41,9 @@ This script was implemented and tested using WSL Ubuntu 20.04, 22.04, and 24.04.
 
 ---
 
-## Tmux (Terminal Multiplexer)
+## Tmux
 
-Tmux allows multiple terminal sessions to be accessed and controlled from a single window.
+Tmux (Terminal Multiplexer) allows multiple terminal sessions to be accessed and controlled from a single window.
 
 ### Configuration
 - Config can be edited & applied with alias `trc`
@@ -62,9 +62,9 @@ Tmux allows multiple terminal sessions to be accessed and controlled from a sing
 
 ---
 
-## Zsh (Z shell)
+## Zsh
 
-Zsh is an extended shell with more powerful features than bash.
+Zsh (Z Shell) is an extended shell with more powerful features than bash.
 
 ### Configuration
 - Config can be edited & applied with alias `zrc`

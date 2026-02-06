@@ -41,6 +41,9 @@ try {
 }
 
 Wait-For-Keypress -message "`nInstallation successful!`n`nPress any key to close..." -color "Green"
+
+Write-Host "Resetting ExecutionPolicy back to Restricted..."
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force;
 exit
 
 # Known Issues:

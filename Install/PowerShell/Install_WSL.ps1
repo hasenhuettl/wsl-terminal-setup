@@ -90,9 +90,8 @@ if (Should-Run-Step "Setup") {
 	# Set default profile to ubuntu guid
 	# Change hotkeys for copy as well as insert
 
-
-	# Start Menu: Start ubuntu
-	# Use your windows username and some other password
+	# User setup
+	Wait-For-Keypress "Please start $distribution, then set your windows username and some password.."
 
 	bash "$linuxStyleRootPath/Install/WinTerminal/settings.json"
 	#bash /mnt/c/Scripts/Bash/wsl_setup.sh
@@ -110,9 +109,12 @@ if (Should-Run-Step "Setup") {
 	wsl --shutdown
 
 	# TODO: validate path
-	reg import .\URL_Handler.reg
+	# reg import .\URL_Handler.reg
 
-	# Installation successfully finished!
+	Write-Host "Resetting ExecutionPolicy back to Restricted..."
+	Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force;
+
+	Write-Host "Installation successfully finished!"
 
 }
 

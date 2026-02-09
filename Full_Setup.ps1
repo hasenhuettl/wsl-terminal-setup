@@ -1,12 +1,12 @@
 # PowerShell
 
+# Parameter to prevent infinite recursion loop
+param (
+  [switch] $Elevated = $false
+)
+
 # Stop on error
 $ErrorActionPreference = "Stop"
-
-# Parameter to prevent infinite recursion loop
-param(
-    [switch]$elevated = $false
-)
 
 . $PSScriptRoot\Install\PowerShell\Functions.ps1
 
@@ -24,7 +24,7 @@ function Test-Admin {
 }
 
 if ((Test-Admin) -eq $false)  {
-    if ($elevated) {
+    if ($Elevated) {
         # Tried to elevate, did not work, aborting to prevent recursion loop
     } else {
         Start-Process powershell.exe -Verb RunAs -ArgumentList "-noprofile", "-file", $myinvocation.MyCommand.Definition, "-elevated"

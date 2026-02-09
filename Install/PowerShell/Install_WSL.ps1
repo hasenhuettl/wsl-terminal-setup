@@ -1,10 +1,12 @@
 ﻿# PowerShell
 
+# Define parameters
+param (
+	$Step = "Install"
+)
+
 # Stop on error
 $ErrorActionPreference = "Stop"
-
-# Define parameters
-param($Step="Install")
 
 # -------------------------------------
 # Imports

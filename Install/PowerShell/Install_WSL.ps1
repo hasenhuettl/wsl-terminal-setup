@@ -1,13 +1,20 @@
-﻿param($Step="Install")
+﻿# PowerShell
+
+# Stop on error
+$ErrorActionPreference = "Stop"
+
+# Define parameters
+param($Step="Install")
+
 # -------------------------------------
 # Imports
 # -------------------------------------
 
-	# Root Path for WSL-Setup
-	$rootPath = $PSScriptRoot | split-path -parent | split-path -parent
+# Root Path for WSL-Setup
+$rootPath = $PSScriptRoot | split-path -parent | split-path -parent
 
-	# Convert Windows-style path to Linux-style path
-	$linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
+# Convert Windows-style path to Linux-style path
+$linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
 
 # Import functions
 . $PSScriptRoot\Functions.ps1
@@ -25,6 +32,7 @@ if ($distroInstalled) {
 
 # Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
+
 	Write-Host "Installing WSL distribution $distribution..."
 
 	wsl --install --distribution "$distribution"
@@ -41,7 +49,8 @@ if (Should-Run-Step "Setup") {
 	winget install Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements
 
 	Write-Host "Installing 7zip for PowerShell..."
-	Install-Module -Name 7Zip4Powershell -Force -Scope CurrentUser
+	Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+	Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Force
 
 	Write-Host "Installing Nerf Font..."
 	# Define variables
@@ -73,7 +82,7 @@ if (Should-Run-Step "Setup") {
 	$terminalSettingsPath = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 
 	# Define your source settings file path (adjust this to your actual path)
-	$sourceSettingsPath = "$linuxStyleRootPath/Install/WinTerminal/settings.json"
+	$sourceSettingsPath = "$env:USERPROFILE\git\wsl-terminal-setup-main\Install\WinTerminal\settings.json"
 
 	Copy-Item $sourceSettingsPath $terminalSettingsPath -Force
 	Write-Host "Successfully copied settings to Windows Terminal" -ForegroundColor Green

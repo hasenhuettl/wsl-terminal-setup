@@ -1,5 +1,8 @@
 # PowerShell
 
+# Stop on error
+$ErrorActionPreference = "Stop"
+
 # Parameter to prevent infinite recursion loop
 param(
     [switch]$elevated = $false

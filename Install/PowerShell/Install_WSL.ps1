@@ -9,6 +9,9 @@ param (
 # Stop on error
 $ErrorActionPreference = "Stop"
 
+# Disable download bar as it slows down download speed ~10x
+$ProgressPreference = 'SilentlyContinue'
+
 trap {
 	Write-Host "Error occurred: $_" -ForegroundColor Red
 	Wait-For-Keypress "Press any key to exit..."
@@ -84,15 +87,13 @@ if (Should-Run-Step "Setup") {
 	Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Force
 
 	# Define variables
-	$ProgressPreference = 'SilentlyContinue'
-	$headers = @{ "Connection" = "Keep-Alive" }
 	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 	$destination = "$env:TEMP\JetBrainsMono.tar.xz"
 	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
 
 	# Download the font zip
 	Write-Host "Downloading Nerd Font..."
-	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination -Headers $headers -UseBasicParsing
+	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
 
 	# Extract it
 	Write-Host "Extracting Nerd Font..."

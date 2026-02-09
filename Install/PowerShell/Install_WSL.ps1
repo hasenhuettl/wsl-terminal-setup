@@ -2,11 +2,18 @@
 
 # Define parameters
 param (
-	$Step = "Install"
+	[string] $Step = "Install",
+	[switch] $Elevated = $false
 )
 
 # Stop on error
 $ErrorActionPreference = "Stop"
+
+trap {
+	Write-Host "Error occurred: $_" -ForegroundColor Red
+	Wait-For-Keypress "Press any key to exit..."
+	break
+}
 
 # -------------------------------------
 # Imports
@@ -22,6 +29,26 @@ $linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/m
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
 . (Join-Path $rootPath '\Config\config.ps1')
+
+# Ensure this script is run as admin
+function Test-Admin {
+	$currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+	$currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
+if ((Test-Admin) -eq $false)  {
+	if ($Elevated) {
+		# Tried to elevate, did not work, aborting to prevent recursion loop
+	} else {
+		Start-Process powershell.exe `
+			-Verb RunAs `
+			-ArgumentList "-noprofile", `
+			"-file", $myinvocation.MyCommand.Definition, `
+			"-Step", "$Step", `
+			"-Elevated"
+	}
+	exit
+}
 
 Clear-Any-Restart
 
@@ -56,19 +83,23 @@ if (Should-Run-Step "Setup") {
 	Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 	Install-Module -Name 7Zip4Powershell -Scope CurrentUser -Force
 
-	Write-Host "Installing Nerf Font..."
 	# Define variables
+	$ProgressPreference = 'SilentlyContinue'
+	$headers = @{ "Connection" = "Keep-Alive" }
 	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 	$destination = "$env:TEMP\JetBrainsMono.tar.xz"
 	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
 
 	# Download the font zip
-	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
+	Write-Host "Downloading Nerd Font..."
+	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination -Headers $headers -UseBasicParsing
 
 	# Extract it
+	Write-Host "Extracting Nerd Font..."
 	Expand-7Zip -ArchiveFileName "$env:TEMP\JetBrainsMono.tar.xz" -TargetPath "$env:TEMP\JetBrainsMonoFonts"
 
 	# Install fonts
+	Write-Host "Installing Nerd Font..."
 	$fonts = Get-ChildItem -Path $extractPath -Include *.ttf -Recurse
 	foreach ($font in $fonts) {
 		Copy-Item $font.FullName -Destination "$env:WINDIR\Fonts"

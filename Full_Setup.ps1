@@ -2,45 +2,57 @@
 
 # Parameter to prevent infinite recursion loop
 param (
-  [switch] $Elevated = $false
+	[switch] $Elevated = $false
 )
 
 # Stop on error
 $ErrorActionPreference = "Stop"
+
+trap {
+	Write-Host "Error occurred: $_" -ForegroundColor Red
+	Read-Host "Press Enter to exit"
+	Wait-For-Keypress "The script will continue after a reboot, press any key to reboot..."
+	break
+}
 
 . $PSScriptRoot\Install\PowerShell\Functions.ps1
 
 $executionPolicy = Get-ExecutionPolicy -Scope CurrentUser
 # Ensure ExecutionPolicy Policy is set to RemoteSigned
 if ($executionPolicy -eq "Restricted") {
-    Wait-For-Keypress -message "`nEnsure ExecutionPolicy Policy is set to RemoteSigned! Command:`n
-    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force`n`nPress any key to close..." -color "Red"
+	Wait-For-Keypress -message "`nEnsure ExecutionPolicy Policy is set to RemoteSigned! Command:`n
+	Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force`n`nPress any key to close..." -color "Red"
 }
 
 # Ensure this script is run as admin
 function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+	$currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+	$currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
 if ((Test-Admin) -eq $false)  {
-    if ($Elevated) {
-        # Tried to elevate, did not work, aborting to prevent recursion loop
-    } else {
-        Start-Process powershell.exe -Verb RunAs -ArgumentList "-noprofile", "-file", $myinvocation.MyCommand.Definition, "-elevated"
-    }
-    exit
+	if ($Elevated) {
+		# Tried to elevate, did not work, aborting to prevent recursion loop
+	} else {
+		Start-Process powershell.exe `
+			-Verb RunAs `
+			-ArgumentList "-noprofile", `
+			"-file", $myinvocation.MyCommand.Definition, `
+			"-Step", "$Step, `
+			"-Elevated"
+	}
+	exit
 }
 
 # Run installation functions, print error on fail
 try {
-    . $PSScriptRoot\Install\PowerShell\Install_WSL.ps1
+	. $PSScriptRoot\Install\PowerShell\Install_WSL.ps1
 
 } catch {
-    $ErrorMessage = $_.Exception.Message
+	$ErrorMessage = $_.Exception.Message
 
-    Wait-For-Keypress -message "`n$ErrorMessage`n`nPress any key to close..." -color "Red"
-    exit
+	Wait-For-Keypress -message "`n$ErrorMessage`n`nPress any key to close..." -color "Red"
+	exit
 }
 
 Wait-For-Keypress -message "`nInstallation successful!`n`nPress any key to close..." -color "Green"

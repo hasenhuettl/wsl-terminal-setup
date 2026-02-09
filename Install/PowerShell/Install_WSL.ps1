@@ -28,6 +28,8 @@ Clear-Any-Restart
 # Check if the specific distribution is already installed
 $distroInstalled = (wsl --list --quiet) -contains "$distribution"
 
+$script = $myinvocation.MyCommand.Definition
+
 if ($distroInstalled) {
 	param($Step="Setup")
 }

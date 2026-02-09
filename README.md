@@ -33,19 +33,15 @@ USE AT YOUR OWN RISK!
 
 To check if winget is working, open PowerShell, and execute:
 
-```
+```powershell
 winget --version
 ```
 
-If your winget has issues, you could also try to manually download "Windows Terminal" from the Microsoft Store.
+If your winget has issues, you could also try to manually download "Windows Terminal" from the Microsoft Store, then comment out the winget line in Install/PowerShell/Install_WSL.ps1.
 
-To check if Virtualization is enabled, open PowerShell, and execute:
+To check if Virtualization is enabled, open Task Manager, go to Performance Tab, select CPU, and look for "Virtualization: Enabled".
 
-```
-Get-ComputerInfo -property "HyperV*"
-```
-
-If HyperVRequirementVirtualizationFirmwareEnabled is empty or set to False, please enable Virtualization in the BIOS.
+If Virtualization is missing or set to False, please enable Virtualization in the BIOS.
 
 ### What will be done:
 

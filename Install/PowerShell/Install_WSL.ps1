@@ -1,4 +1,4 @@
-﻿# PowerShell
+# PowerShell
 
 # Define parameters
 param (
@@ -14,8 +14,8 @@ $ProgressPreference = 'SilentlyContinue'
 
 trap {
 	Write-Host "Error occurred: $_" -ForegroundColor Red
-	Wait-For-Keypress "Press any key to exit..."
-	break
+	Wait-For-Keypress "Press any key to cancel..."
+	exit 1
 }
 
 # -------------------------------------
@@ -27,6 +27,15 @@ $rootPath = $PSScriptRoot | split-path -parent | split-path -parent
 
 # Convert Windows-style path to Linux-style path
 $linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
+
+$script = $myinvocation.MyCommand.Definition
+
+# Check if the specific distribution is already installed
+$distroInstalled = (wsl --list --quiet) -contains "$distribution"
+
+if ($distroInstalled) {
+	$Step = "Setup"
+}
 
 # Import functions
 . $PSScriptRoot\Functions.ps1
@@ -55,19 +64,12 @@ if ((Test-Admin) -eq $false)  {
 
 Clear-Any-Restart
 
-# Check if the specific distribution is already installed
-$distroInstalled = (wsl --list --quiet) -contains "$distribution"
-
-$script = $myinvocation.MyCommand.Definition
-
-if ($distroInstalled) {
-	param($Step="Setup")
-}
-
+Write-Host "$Step"
 # Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
-
+	Write-Host "hihihi"
 	Write-Host "Installing WSL distribution $distribution..."
+	Write-Host "If you are asked to setup user + password, please enter 'exit' afterwards." -ForegroundColor Magenta
 
 	wsl --install --distribution "$distribution"
 
@@ -90,14 +92,21 @@ if (Should-Run-Step "Setup") {
 	$downloadUrl = "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz"
 	$destination = "$env:TEMP\JetBrainsMono.tar.xz"
 	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
-
+	$tarPath = Join-Path $extractPath "JetBrainsMono.tar"
+	
 	# Download the font zip
 	Write-Host "Downloading Nerd Font..."
 	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
 
 	# Extract it
 	Write-Host "Extracting Nerd Font..."
-	Expand-7Zip -ArchiveFileName "$env:TEMP\JetBrainsMono.tar.xz" -TargetPath "$env:TEMP\JetBrainsMonoFonts"
+	Expand-7Zip -ArchiveFileName "$destination" -TargetPath "$extractPath"
+
+	# Sanity check if 7zip expanded .tar.gz to .tar
+	if (Test-Path $tarPath) {
+		Expand-7Zip -ArchiveFileName $tarPath -TargetPath $extractPath
+		Remove-Item $tarPath -Force
+	}
 
 	# Install fonts
 	Write-Host "Installing Nerd Font..."
@@ -127,19 +136,25 @@ if (Should-Run-Step "Setup") {
 	# Change hotkeys for copy as well as insert
 
 	# User setup
-	Wait-For-Keypress "Please start $distribution, then set your windows username and some password.."
+	Write-Host "Please follow the following steps (if not already done previously):" -ForegroundColor Magenta
+	Write-Host "  1) Open $distribution" -ForegroundColor Magenta
+	Write-Host "  2) Define your WSL username and password" -ForegroundColor Magenta
+	Write-Host "  3) Exit $distribution" -ForegroundColor Magenta
+	Write-Host "  4) Return to this window" -ForegroundColor Magenta
+	Wait-For-Keypress "If above steps are completed, press any button to continue..."
 
-	bash "$linuxStyleRootPath/Install/WinTerminal/settings.json"
-	#bash /mnt/c/Scripts/Bash/wsl_setup.sh
+	# Set default wsl distro
+	wsl --set-default $distribution
+
 	# Ubuntu shell
-
 	Write-Host "Running APT update and install..."
 	bash "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
-	#bash /mnt/c/Scripts/Bash/wsl_setup.sh
 
-	Write-Host "Running Bash Scripts..."
+	Write-Host "Installing packages..."
+	bash "$linuxStyleRootPath/Install/Bash/install_packages.sh"
+
+	Write-Host "Placing config files..."
 	bash "$linuxStyleRootPath/Install/Bash/downloads.sh"
-	#bash /mnt/c/Scripts/Bash/downloads.sh
 
 	# Restart WSL
 	wsl --shutdown
@@ -150,7 +165,7 @@ if (Should-Run-Step "Setup") {
 	Write-Host "Resetting ExecutionPolicy back to Restricted..."
 	Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force;
 
-	Write-Host "Installation successfully finished!"
-
+	Write-Host "`nInstallation successfully finished!`n" -ForegroundColor Green
+	Wait-For-Keypress -message "`Press any key to close installer and open Windows Terminal..." -color "Magenta"
+	wt.exe
 }
-

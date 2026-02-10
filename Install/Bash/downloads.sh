@@ -6,8 +6,6 @@ FOLDER=$HOME/git/wsl-terminal-setup
 
 cd ~
 
-source $FOLDER/Install/Bash/install_packages.sh
-
 mkdir -p git
 mkdir -p .ssh/cm_socket
 mkdir -p .local/data

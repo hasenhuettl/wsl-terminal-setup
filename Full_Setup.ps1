@@ -10,9 +10,8 @@ $ErrorActionPreference = "Stop"
 
 trap {
 	Write-Host "Error occurred: $_" -ForegroundColor Red
-	Read-Host "Press Enter to exit"
-	Wait-For-Keypress "The script will continue after a reboot, press any key to reboot..."
-	break
+	Wait-For-Keypress "Press any key to cancel..."
+	exit 1
 }
 
 . $PSScriptRoot\Install\PowerShell\Functions.ps1
@@ -38,7 +37,7 @@ if ((Test-Admin) -eq $false)  {
 			-Verb RunAs `
 			-ArgumentList "-noprofile", `
 			"-file", $myinvocation.MyCommand.Definition, `
-			"-Step", "$Step, `
+			"-Step", "Install", `
 			"-Elevated"
 	}
 	exit
@@ -54,12 +53,6 @@ try {
 	Wait-For-Keypress -message "`n$ErrorMessage`n`nPress any key to close..." -color "Red"
 	exit
 }
-
-Wait-For-Keypress -message "`nInstallation successful!`n`nPress any key to close..." -color "Green"
-
-Write-Host "Resetting ExecutionPolicy back to Restricted..."
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force;
-exit
 
 # Known Issues:
 # export TERM=xterm in case of problems

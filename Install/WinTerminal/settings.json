@@ -4,8 +4,8 @@
     "actions": [],
     "copyFormatting": "none",
     "copyOnSelect": false,
-    "defaultProfile": "{d8e96812-b789-5068-a5ae-10b2fb53e95f}",
-    "keybindings":
+    "defaultProfile": "{20f4f0b5-53aa-500a-b024-9eba6a222f62}",
+    "keybindings": 
     [
         {
             "id": "Terminal.CopyToClipboard",
@@ -16,25 +16,23 @@
             "keys": "alt+shift+d"
         }
     ],
-    "language": "en-US",
-    "launchMode": "maximized",
-    "newTabMenu":
+    "newTabMenu": 
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles":
+    "profiles": 
     {
-        "defaults":
+        "defaults": 
         {
             "colorScheme": "Custom Solarized Light",
-            "font":
+            "font": 
             {
                 "face": "JetBrainsMono Nerd Font"
             }
         },
-        "list":
+        "list": 
         [
             {
                 "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
@@ -49,32 +47,20 @@
                 "name": "Command Prompt"
             },
             {
-                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "guid": "{20f4f0b5-53aa-500a-b024-9eba6a222f62}",
                 "hidden": false,
-                "name": "PowerShell",
-                "source": "Windows.Terminal.PowershellCore"
-            },
-            {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{963ff2f7-6aed-5ce3-9d91-90d99571f53a}",
-                "hidden": true,
                 "name": "Ubuntu-24.04",
-                "source": "Windows.Terminal.Wsl"
+                "source": "Microsoft.WSL"
             },
             {
-                "guid": "{d8e96812-b789-5068-a5ae-10b2fb53e95f}",
+                "guid": "{4ff56d04-d9cf-57ea-bae2-ad396374e7e3}",
                 "hidden": false,
-                "name": "Ubuntu 24.04.1 LTS",
-                "source": "CanonicalGroupLimited.Ubuntu24.04LTS_79rhkp1fndgsc"
+                "name": "Ubuntu 22.04.5 LTS",
+                "source": "CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc"
             }
         ]
     },
-    "schemes":
+    "schemes": 
     [
         {
             "background": "#FDF6E3",

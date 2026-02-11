@@ -105,8 +105,8 @@ fi
 
 # System == WSL
 if [ -n "$WSL_DISTRO_NAME" ]; then
-  alias shut="cmd.exe /C wsl --shutdown"
-  alias lo="ssh $(cmd.exe /C hostname | tr -d '\n' | tr -d '\r')"
+  alias shut="powershell.exe /C wsl --shutdown"
+  alias lo="ssh $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')"
   alias rick='powershell.exe /c start "https://www.youtube.com/watch?v=dQw4w9WgXcQ"'
 fi
 

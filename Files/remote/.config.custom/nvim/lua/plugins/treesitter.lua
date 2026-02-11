@@ -1,33 +1,28 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
-  config = function ()
-    local configs = require("nvim-treesitter.configs")
-
-    configs.setup({
-      ensure_installed = {
-        "lua",
-        "vim",
-        "vimdoc",
-        "comment",
+  opts = {
+    ensure_installed = {
+      "lua",
+      "vim",
+      "vimdoc",
+      "comment",
+    },
+    auto_install = true,
+    sync_install = false,
+    highlight = { enable = true },
+    indent = {
+      enable = true,
+      disable = { "javascript", "typescript" }, -- has issue with JQuery notation for method chaining (.done(function(user) {})) => fallback to standard indent
+    },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "<Enter>", -- set to `false` to disable one of the mappings
+        node_incremental = "<Enter>",
+        scope_incremental = false,
+        node_decremental = "<Backspace>",
       },
-      auto_install = true,
-      sync_install = false,
-      highlight = { enable = true },
-      indent = {
-        enable = true,
-        disable = { "javascript", "typescript" } -- has issue with JQuery notation for method chaining (.done(function(user) {})) => fallback to standard indent
-      },
-
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<Enter>", -- set to `false` to disable one of the mappings
-          node_incremental = "<Enter>",
-          scope_incremental = false,
-          node_decremental = "<Backspace>",
-        },
-      },
-    })
-  end
+    },
+  },
 }

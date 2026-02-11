@@ -4,7 +4,7 @@
     "actions": [],
     "copyFormatting": "none",
     "copyOnSelect": false,
-    "defaultProfile": "{20f4f0b5-53aa-500a-b024-9eba6a222f62}",
+    "defaultProfile": "{85bd5fe3-a184-57cf-a0bc-40bef4366f2e}",
     "keybindings": 
     [
         {
@@ -47,16 +47,10 @@
                 "name": "Command Prompt"
             },
             {
-                "guid": "{20f4f0b5-53aa-500a-b024-9eba6a222f62}",
+                "guid": "{85bd5fe3-a184-57cf-a0bc-40bef4366f2e}",
                 "hidden": false,
                 "name": "Ubuntu-24.04",
                 "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{4ff56d04-d9cf-57ea-bae2-ad396374e7e3}",
-                "hidden": false,
-                "name": "Ubuntu 22.04.5 LTS",
-                "source": "CanonicalGroupLimited.Ubuntu22.04LTS_79rhkp1fndgsc"
             }
         ]
     },

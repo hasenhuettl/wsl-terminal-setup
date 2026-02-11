@@ -33,7 +33,7 @@ fi
 
 for file in .config.custom .bashrc .ssh; do
   # If file exists already
-  if [ "$file" ]; then
+  if [[ -e "$file" ]]; then
     echo "Moving old $file to $file.pre-wsl-terminal-setup..."
     mv "$file" "$file.pre-wsl-terminal-setup"
   fi

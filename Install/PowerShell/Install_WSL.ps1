@@ -22,13 +22,17 @@ trap {
 # Imports
 # -------------------------------------
 
+# Path to this script
+$script = $myinvocation.MyCommand.Definition
+
 # Root Path for WSL-Setup
 $rootPath = $PSScriptRoot | split-path -parent | split-path -parent
 
+# Import $distribution variable
+. (Join-Path $rootPath '\Config\config.ps1')
+
 # Convert Windows-style path to Linux-style path
 $linuxStyleRootPath = $rootPath -replace '\\', '/' -creplace '^([A-Za-z]):', '/mnt/$1' | ForEach-Object { $_.ToLower() }
-
-$script = $myinvocation.MyCommand.Definition
 
 # Check if the specific distribution is already installed
 $distroInstalled = (wsl --list --quiet) -contains "$distribution"
@@ -40,7 +44,6 @@ if ($distroInstalled) {
 # Import functions
 . $PSScriptRoot\Functions.ps1
 . $PSScriptRoot\WSL_Functions.ps1
-. (Join-Path $rootPath '\Config\config.ps1')
 
 # Ensure this script is run as admin
 function Test-Admin {
@@ -67,7 +70,6 @@ Clear-Any-Restart
 Write-Host "$Step"
 # Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
-	Write-Host "hihihi"
 	Write-Host "Installing WSL distribution $distribution..."
 	Write-Host "If you are asked to setup user + password, please enter 'exit' afterwards." -ForegroundColor Magenta
 

@@ -4,6 +4,9 @@ set -e
 
 FOLDER=$HOME/git/wsl-terminal-setup
 
+# Define files to backup
+files=(.bashrc .ssh .config.custom scripts)
+
 cd ~
 
 mkdir -p git
@@ -18,21 +21,17 @@ fi
 
 cd ~
 
-# Backup old files
-# Check for .bashrc backup
-if [ -e ".bashrc.pre-wsl-terminal-setup" ]; then
-  echo "Error: .bashrc.pre-wsl-terminal-setup already exists. Aborting to prevent overwrite." >&2
-  exit 1
-fi
+# Check for existing backups first
+for file in "${files[@]}"; do
+  backup="$file.pre-wsl-terminal-setup"
+  if [ -e "$backup" ]; then
+    echo "Error: $backup already exists. Aborting to prevent overwrite." >&2
+    exit 1
+  fi
+done
 
-# Check for .ssh backup
-if [ -e ".ssh.pre-wsl-terminal-setup" ]; then
-  echo "Error: .ssh.pre-wsl-terminal-setup already exists. Aborting to prevent overwrite." >&2
-  exit 1
-fi
-
-for file in .config.custom .bashrc .ssh; do
-  # If file exists already
+# If file exists, do a backup
+for file in "${files[@]}"; do
   if [[ -e "$file" ]]; then
     echo "Moving old $file to $file.pre-wsl-terminal-setup..."
     mv "$file" "$file.pre-wsl-terminal-setup"
@@ -42,6 +41,7 @@ done
 # Create symlinks
 ln -s "$FOLDER/Files/local/.config.custom" ".config.custom"
 ln -s ".config.custom/bash/.bashrc" ".bashrc"
+ln -s "git/wsl-terminal-setup/Files/local/scripts" "scripts"
 
 # TODO:
 # sudo ln -sf "$HOME/custom/sshurl.pl" "/usr/bin/sshurl"

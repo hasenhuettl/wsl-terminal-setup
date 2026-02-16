@@ -95,7 +95,7 @@ if (Should-Run-Step "Setup") {
 	$destination = "$env:TEMP\JetBrainsMono.tar.xz"
 	$extractPath = "$env:TEMP\JetBrainsMonoFonts"
 	$tarPath = Join-Path $extractPath "JetBrainsMono.tar"
-	
+
 	# Download the font zip
 	Write-Host "Downloading Nerd Font..."
 	Invoke-WebRequest -Uri $downloadUrl -OutFile $destination
@@ -156,7 +156,7 @@ if (Should-Run-Step "Setup") {
 	bash "$linuxStyleRootPath/Install/Bash/install_packages.sh"
 
 	Write-Host "Placing config files..."
-	bash "$linuxStyleRootPath/Install/Bash/downloads.sh"
+	bash "$linuxStyleRootPath/Install/Bash/userconfig_setup.sh"
 
 	# Restart WSL
 	wsl --shutdown

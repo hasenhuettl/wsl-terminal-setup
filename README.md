@@ -28,8 +28,15 @@ USE AT YOUR OWN RISK!
 ### Pre-requisites:
  - Windows 10 version 2004 or higher
  - Windows 11+
+ - Working WSL
  - Working winget
  - Enabled Virtualization in your BIOS/UEFI
+
+To check if WSL is working, open PowerShell, and execute:
+
+```powershell
+wsl --version
+```
 
 To check if winget is working, open PowerShell, and execute:
 

@@ -12,4 +12,7 @@ Windows Registry Editor Version 5.00
 [HKEY_CLASSES_ROOT\ssh\shell\open]
 
 [HKEY_CLASSES_ROOT\ssh\shell\open\command]
-@="c:\\windows\\system32\\wsl.exe -e tmux new-window \"sshurl \\\"%1\\\"\""
+@="c:\\windows\\system32\\wsl.exe -e ssh-url %1"
+
+[HKEY_CLASSES_ROOT\WinSCP.Url\shell\open\command]
+@="c:\\windows\\system32\\wsl.exe -e ssh-url %1"

@@ -43,8 +43,8 @@ ln -s "$FOLDER/Files/local/.config.custom" ".config.custom"
 ln -s ".config.custom/bash/.bashrc" ".bashrc"
 ln -s "git/wsl-terminal-setup/Files/local/scripts" "scripts"
 
-# TODO:
-# sudo ln -sf "$HOME/custom/sshurl.pl" "/usr/bin/sshurl"
+# SSH browser link protocol handling
+sudo ln -sf "$HOME/scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
 
 # Copy ssh config
 cp -r "$FOLDER/Files/local/.ssh" ".ssh"
@@ -55,9 +55,9 @@ cp -r "$FOLDER/Files/local/.ssh" ".ssh"
 # Ask for reboot
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-printf "${BLUE}The system ($HOSTNAME) may require a reboot. Do you want to reboot now?${NC} (y/n): "
+echo "${BLUE}The linux system (${HOSTNAME}) may require a reboot. Do you want to reboot now?${NC} (y/n): "
 read -n 1 response
-printf "\n"
+echo
 
 if [[ "$response" =~ ^[Yy]$ ]]; then
   # Function to check if the system is WSL

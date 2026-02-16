@@ -161,8 +161,8 @@ if (Should-Run-Step "Setup") {
 	# Restart WSL
 	wsl --shutdown
 
-	# TODO: validate path
-	# reg import .\URL_Handler.reg
+	# Import SSH URL Handling registry settings
+	reg import "$env:USERPROFILE\git\wsl-terminal-setup-main\Install\Registry\URL_Handler.reg"
 
 	Write-Host "Resetting ExecutionPolicy back to Restricted..."
 	Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted -Force;

@@ -4,7 +4,7 @@ then
   PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 
-PATH="$PATH:/opt/nvim-linux-x86_64/bin" # add nvim to PATH
+#PATH="$PATH:/opt/nvim-linux-x86_64/bin" # add nvim to PATH
 
 export PATH
 

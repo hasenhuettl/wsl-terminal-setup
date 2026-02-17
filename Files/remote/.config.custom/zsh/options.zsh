@@ -20,8 +20,9 @@ fi
 
 # Set standard editor to nvim (if its installed)
 if hash nvim > /dev/null 2>&1; then
-  export VISUAL=nvim
-  export EDITOR="$VISUAL"
+  export SUDO_EDITOR="$HOME/.config.custom/scripts/open_nvim.sh"
+  export VISUAL="$SUDO_EDITOR"
+  export EDITOR="$SUDO_EDITOR"
 else
   echo "No Neovim here... You can install it via 'install_packages' command. (RHEL: sudo dnf module reset nodejs && sudo dnf module enable nodejs:20 && install_packages)"
 fi

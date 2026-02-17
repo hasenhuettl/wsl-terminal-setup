@@ -26,8 +26,8 @@ alias vi='\vim -u ~/.config.custom/vim/.myvimrc'
 alias vimdiff='vim -d' # Compare files
 if hash nvim > /dev/null 2>&1; then
   # Set standard editor to nvim (if its installed)
-  alias vim='env XDG_CONFIG_HOME="$HOME/.config.custom" nvim' # run nvim, with config files located in $HOME/.config.custom
-  alias svim='sudo env HOME=$HOME XDG_CONFIG_HOME="$HOME/.config.custom" $(which nvim)' # as root, run nvim with my config
+  alias vim='$EDITOR' # run nvim, with config files located in $HOME/.config.custom
+  alias svim='sudoedit' # Sudoedit: Edit files with user environment and elevated privileges, but don't expose root permissions to plugins
 elif hash vim > /dev/null 2>&1; then
   # 2nd option: Vim
   alias vim='\vim -u ~/.config.custom/vim/.myvimrc'
@@ -97,16 +97,11 @@ alias gdel='git branch -D'
 alias gm='git merge'
 alias ggc='git config --global'
 
-# System == LOCAL (NOT ssh)
-if [ -z "$SSH_CLIENT" ]; then
-  alias ssh='$HOME/scripts/myssh.py'
-  alias ussh='/usr/bin/ssh'
-fi
-
 # System == WSL
 if [ -n "$WSL_DISTRO_NAME" ]; then
-  alias shut="powershell.exe /C wsl --shutdown"
-  alias lo="ssh $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')"
-  alias rick='powershell.exe /c start "https://www.youtube.com/watch?v=dQw4w9WgXcQ"'
+  alias ssh='$HOME/scripts/myssh.py'
+  alias ussh='/usr/bin/ssh'
+  #alias shut="powershell.exe /C wsl --shutdown"
+  #alias lo="ssh $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')"
 fi
 

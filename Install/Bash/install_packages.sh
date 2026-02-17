@@ -57,7 +57,7 @@ install_deps() {
 
       echo "Checking available nodejs version..."
 
-      NODE_CANDIDATE="$(apt-cache policy nodejs | grep Candidate | awk '{print $2}')"
+      NODE_CANDIDATE="$(sudo apt-cache policy nodejs | grep Candidate | awk '{print $2}')"
 
       if [ -n "$NODE_CANDIDATE" ] && [ "$NODE_CANDIDATE" != "(none)" ]; then
         NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
@@ -90,7 +90,7 @@ install_deps() {
       echo "System is centos/rhel."
       echo "Checking available nodejs version..."
 
-      NODE_CANDIDATE="$(yum info nodejs 2>/dev/null | grep Version | awk '{print $3}')"
+      NODE_CANDIDATE="$(sudo yum info nodejs 2>/dev/null | grep Version | awk '{print $3}')"
 
       if [ -n "$NODE_CANDIDATE" ]; then
         NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
@@ -157,6 +157,9 @@ install_neovim() {
 
   echo "✅ Dependencies installed at /opt/nvim-linux-x86_64 and linked to /usr/local/bin/nvim"
   nvim --version
+
+  echo "Sourcing ZSH again..."
+  source "$HOME/.config.custom/zsh/.zshrc"
 }
 
 main() {

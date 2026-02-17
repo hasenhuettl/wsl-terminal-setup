@@ -4,8 +4,8 @@
     "actions": [],
     "copyFormatting": "none",
     "copyOnSelect": false,
-    "defaultProfile": "{85bd5fe3-a184-57cf-a0bc-40bef4366f2e}",
-    "keybindings": 
+    "defaultProfile": "",
+    "keybindings":
     [
         {
             "id": "Terminal.CopyToClipboard",
@@ -17,45 +17,25 @@
         }
     ],
     "launchMode": "maximized",
-    "newTabMenu": 
+    "newTabMenu":
     [
         {
             "type": "remainingProfiles"
         }
     ],
-    "profiles": 
+    "profiles":
     {
-        "defaults": 
+        "defaults":
         {
             "colorScheme": "Custom Solarized Light",
-            "font": 
+            "font":
             {
                 "face": "JetBrainsMono Nerd Font"
             }
         },
-        "list": 
-        [
-            {
-                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": false,
-                "name": "Windows PowerShell"
-            },
-            {
-                "commandline": "%SystemRoot%\\System32\\cmd.exe",
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "Command Prompt"
-            },
-            {
-                "guid": "{85bd5fe3-a184-57cf-a0bc-40bef4366f2e}",
-                "hidden": false,
-                "name": "Ubuntu-24.04",
-                "source": "Microsoft.WSL"
-            }
-        ]
+        "list": []
     },
-    "schemes": 
+    "schemes":
     [
         {
             "background": "#FDF6E3",
@@ -107,3 +87,4 @@
     "theme": "system",
     "themes": []
 }
+

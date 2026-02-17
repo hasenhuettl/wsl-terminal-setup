@@ -123,18 +123,46 @@ if (Should-Run-Step "Setup") {
 
 	# Edit Windows Terminal Settings:
 
-	Write-Host "Copying Windows Terminal Settings..."
-
-	# Get the current user's Windows Terminal settings path
+	# Define paths
 	$terminalSettingsPath = Join-Path $env:LOCALAPPDATA "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
-
-	# Define your source settings file path (adjust this to your actual path)
 	$sourceSettingsPath = "$env:USERPROFILE\git\wsl-terminal-setup-main\Install\WinTerminal\settings.json"
 
-	Copy-Item $sourceSettingsPath $terminalSettingsPath -Force
-	Write-Host "Successfully copied settings to Windows Terminal" -ForegroundColor Green
+	# Step 1: Read json data from the DESTINATION (current/live) settings BEFORE overwriting
+	$preservedDefault = $null
+	$preservedProfiles = $null
+	if (Test-Path $terminalSettingsPath) {
+		Write-Host "Reading existing data from current Terminal settings..."
+		$existingSettings = Get-Content $terminalSettingsPath -Raw | ConvertFrom-Json
+		$preservedDefault = $existingSettings.defaultProfile
+		$preservedProfiles = $existingSettings.profiles.list
+		Write-Host "Found $($preservedProfiles.Count) existing profile(s) to preserve." -ForegroundColor Cyan
+	}
 
-	# Set default profile to ubuntu guid
+	# Step 2: Copy the source settings file over the destination
+	Copy-Item $sourceSettingsPath $terminalSettingsPath -Force
+	Write-Host "Copied base settings to Windows Terminal." -ForegroundColor Green
+
+	# Step 3: Re-apply preserved data via targeted raw text replacement
+	if ($null -ne $preservedProfiles) {
+		Write-Host "Restoring json data into new settings..."
+		$rawJson = Get-Content $terminalSettingsPath -Raw
+
+		# Replace defaultProfile value (handles any existing guid or empty string)
+		$rawJson = $rawJson -replace '("defaultProfile"\s*:\s*)"[^"]*"', "`$1`"$preservedDefault`""
+
+		# Serialize profiles list and replace the list array
+		$profilesJson = $preservedProfiles | ConvertTo-Json -Depth 20
+		# Ensure it's an array even for a single profile
+		if ($preservedProfiles.Count -eq 1) { $profilesJson = "[ $profilesJson ]" }
+		# Replace the entire list array (from [ to matching ])
+		$rawJson = $rawJson -replace '("list"\s*:\s*)\[[\s\S]*?\]', "`$1$profilesJson"
+
+		Set-Content $terminalSettingsPath -Value $rawJson -Encoding UTF8 -NoNewline
+		Write-Host "Successfully restored $($preservedProfiles.Count) profile(s)." -ForegroundColor Green
+	} else {
+		Write-Host "No Profiles found!" -ForegroundColor Red
+	}
+
 	# Change hotkeys for copy as well as insert
 
 	# User setup

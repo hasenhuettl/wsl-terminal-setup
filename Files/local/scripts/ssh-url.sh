@@ -1,5 +1,7 @@
 #!/bin/bash
 
+WIN_SCRIPT_PATH=$(wslpath -w "$HOME/scripts/focus-window.ps1")
+PROGRAM="WindowsTerminal"
 SESSION="$USER@$(hostname -s)"
 HOST="$1"
 
@@ -48,6 +50,7 @@ returnValue=$?
 
 if [[ $returnValue -eq 0 ]]; then
   # Session exists
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WIN_SCRIPT_PATH" "$PROGRAM" 2>/dev/null
   echo "Attaching new tmux window to existing tmux.."
   tmux new-window -t "$SESSION" "$COMMAND"
 else

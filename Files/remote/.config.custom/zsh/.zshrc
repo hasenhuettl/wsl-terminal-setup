@@ -3,6 +3,7 @@
 
 source $CONFIG_LOCATION/zsh/plugins/* # place plugin files (e.g.: plugin.zsh) in this directory
 
+source $CONFIG_LOCATION/zsh/functions.zsh
 source $CONFIG_LOCATION/zsh/options.zsh
 source $CONFIG_LOCATION/zsh/aliases.zsh
 source $CONFIG_LOCATION/zsh/bindkeys.zsh

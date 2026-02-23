@@ -27,7 +27,7 @@ alias vimdiff='vim -d' # Compare files
 if hash nvim > /dev/null 2>&1; then
   # Set standard editor to nvim (if its installed)
   alias vim='$EDITOR' # run nvim, with config files located in $HOME/.config.custom
-  alias svim='sudoedit' # Sudoedit: Edit files with user environment and elevated privileges, but don't expose root permissions to plugins
+  alias svim='sedit' # sudo-edit: Edit files with user environment and elevated privileges, but don't expose root permissions to plugins
 elif hash vim > /dev/null 2>&1; then
   # 2nd option: Vim
   alias vim='\vim -u ~/.config.custom/vim/.myvimrc'

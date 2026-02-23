@@ -7,7 +7,15 @@ return {
     vim.cmd[[colorscheme catppuccin-latte]]
 
     -- Try enabling this in case of issues? Think it sets the background if its not defined by terminal?
-    -- vim.opt.background = "light"
+    vim.opt.background = "light"
+
+    -- Enable transparent background while preserving fg and other attributes
+    vim.cmd("highlight Normal guibg=NONE")
+    vim.cmd("highlight NormalNC guibg=NONE")
+    vim.cmd("highlight VertSplit guibg=NONE")
+    vim.cmd("highlight StatusLine guibg=NONE")
+    vim.cmd("highlight StatusLineNC guibg=NONE")
+    vim.cmd("highlight TabLine guibg=NONE")
 
     -- -- Make diagnostic underlines squiggly and colorful!
     -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = "Red" })

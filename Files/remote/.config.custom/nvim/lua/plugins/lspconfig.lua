@@ -1,5 +1,32 @@
--- LSP, Mason, Autocompletion
 return {
+  -- Diagflow
+  {
+    'dgagn/diagflow.nvim',
+    event = 'LspAttach', -- This is what I use personnally and it works great
+    opts = {
+      show_borders = true,
+      toggle_event = { 'InsertEnter' },
+    },
+    config = function()
+      require('diagflow').setup({
+        show_borders = true,
+      })
+
+      local diagflow = require('diagflow')
+
+      vim.api.nvim_create_autocmd('ModeChanged', {
+        pattern = '*:i',
+        callback = function() diagflow.disable() end,
+      })
+
+      vim.api.nvim_create_autocmd('ModeChanged', {
+        pattern = 'i:*',
+        callback = function() diagflow.enable() end,
+      })
+    end,
+  },
+
+  -- LSP, Mason, Autocompletion
   {
     -- skip plugin if nodejs is not installed
     cond = function()

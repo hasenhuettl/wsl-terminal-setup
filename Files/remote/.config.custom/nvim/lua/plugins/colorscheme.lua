@@ -9,14 +9,6 @@ return {
     -- Try enabling this in case of issues? Think it sets the background if its not defined by terminal?
     -- vim.opt.background = "light"
 
-    -- Enable transparent background
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })  -- Non-current windows
-    vim.api.nvim_set_hl(0, "VertSplit", { bg = "none" })  -- Vertical splits
-    vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })  -- Statusline
-    vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "none" }) -- Inactive status line
-    vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })  -- Tabline
-
     -- -- Make diagnostic underlines squiggly and colorful!
     -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = "Red" })
     -- vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn",  { undercurl = true, sp = "Orange" })

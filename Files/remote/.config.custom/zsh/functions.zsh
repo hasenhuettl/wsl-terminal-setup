@@ -29,7 +29,7 @@ sedit() {
   fi
 
   base=$(basename -- "$file") || return 1
-  tmp=$(mktemp "/tmp/sedit.${base}.XXXXXX") || {
+  tmp=$(mktemp "/tmp/sedit.XXX".${base}) || {
     echo "${RED}sedit: mktemp failed${RESET}" >&2
     return 1
   }

@@ -115,7 +115,7 @@ An improved version of Vim with better extensibility and configuration.
 The ssh command is aliased to run $HOME/scripts/myssh.py. You can use either `ussh` or `\ssh` to run standard ssh.
 
 ### Usage
-- Ensure remote system has required packages installed (e.g. rsync, curl, tmux, zsh -> refer to Install/Bash/install_packages.sh)
+- Ensure remote system has required packages installed (e.g. rsync, curl, tmux, zsh -> refer to Install/Bash/install_nvim.sh)
 - View available parameters via `ssh --help`
 - Use standard `ssh [username@]host[:port]` to connect
 

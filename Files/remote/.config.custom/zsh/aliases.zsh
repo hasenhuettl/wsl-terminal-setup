@@ -45,7 +45,7 @@ alias egrep='grep -E'
 alias fgrep='grep -F'
 alias wget='wget --hsts-file=$HOME/.cache/wget/wget-hsts'
 alias which-command='whence'
-alias install_packages='bash $HOME/.config.custom/scripts/install_packages.sh'
+alias install_nvim='bash $HOME/.config.custom/scripts/install_nvim.sh'
 alias brc='vim ~/.config.custom/bash/ && echo "Restart terminal to apply changes"'
 alias nrc='vim ~/.config.custom/nvim/lua' # applied after nvim is restarted
 alias trc='vim ~/.config.custom/tmux/tmux.conf && tmux source-file $TMUX_CONF'
@@ -101,7 +101,5 @@ alias ggc='git config --global'
 if [ -n "$WSL_DISTRO_NAME" ]; then
   alias ssh='$HOME/scripts/myssh.py'
   alias ussh='/usr/bin/ssh'
-  #alias shut="powershell.exe /C wsl --shutdown"
-  #alias lo="ssh $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')"
 fi
 

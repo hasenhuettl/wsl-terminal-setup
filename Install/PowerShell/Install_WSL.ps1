@@ -181,7 +181,7 @@ if (Should-Run-Step "Setup") {
 	bash "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
 
 	Write-Host "Installing packages..."
-	bash "$linuxStyleRootPath/Install/Bash/install_packages.sh"
+	bash "$linuxStyleRootPath/Install/Bash/install_nvim.sh"
 
 	Write-Host "Placing config files..."
 	bash "$linuxStyleRootPath/Install/Bash/userconfig_setup.sh"

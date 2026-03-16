@@ -17,16 +17,16 @@ start_screen () {
     do
       case "$opt" in
           "new session")
-              exec screen -c $screen_conf
+              exec screen -c "$screen_conf"
               break
               ;;
           *)
-            exec screen -x "$opt" -c $screen_conf
+            exec screen -x "$opt" -c "$screen_conf"
             ;;
       esac
     done
   else
-    exec screen -c $screen_conf
+    exec screen -c "$screen_conf"
   fi
 }
 
@@ -35,7 +35,7 @@ start_tmux () {
   if [[ -z "$TMUX" ]]; then
     echo "starting tmux.."
     # exec tmux -f $TMUX_CONF new-session -A -s "$USER@$(hostname -s)"
-    tmux -f $TMUX_CONF new-session -A -s "$USER@$(hostname -s)" && exit
+    tmux -f "$TMUX_CONF" new-session -A -s "$USER@$(hostname -s)" && exit
   else
     echo "Tried to start tmux, but tmux is already running..."
   fi

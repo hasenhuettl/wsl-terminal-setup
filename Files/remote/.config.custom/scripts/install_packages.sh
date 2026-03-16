@@ -1,1 +1,0 @@
-../../../../Install/Bash/install_packages.sh

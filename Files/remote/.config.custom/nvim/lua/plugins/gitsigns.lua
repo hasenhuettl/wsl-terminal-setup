@@ -16,8 +16,7 @@ return {
         delay = 2000,
         ignore_whitespace = false,
       },
-      current_line_blame_formatter = ' <author>, <author_time:%Y-%m-%d> - <summary>',
-      -- current_line_blame_formatter = ' <author> <author_time:%Y-%m-%d>',
+      current_line_blame_formatter = ' <author>, <author_time:%Y-%m-%d>: <abbrev_sha> - <summary>',
     }
   end
 }

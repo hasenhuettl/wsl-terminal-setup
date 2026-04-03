@@ -6,7 +6,7 @@ if [ -n "$WSL_DISTRO_NAME" ]; then
     powershell.exe /C wsl --shutdown
   }
   lo() {
-    ssh $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')
+    $HOME/scripts/myssh.py $(powershell.exe /C hostname | tr -d '\n' | tr -d '\r')
   }
 fi
 

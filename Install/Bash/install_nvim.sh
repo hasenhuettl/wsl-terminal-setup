@@ -7,9 +7,6 @@ basic_tools=(curl tar)
 useful_tools=(wget git)
 terminal_handling=(tmux bash zsh rsync)
 neovim_dependencies=(fzf fd-find ripgrep luarocks)
-neovim_dependencies_lsp=(nodejs)
-#neovim_dependencies_lsp=(nodejs python3-venv)
-nodejs_min_version=18
 
 echoandrun() {
   echo "\$ $*" ;
@@ -30,21 +27,10 @@ get_distro() {
   fi
 }
 
-check_nodejs_version() {
-  local NODE_MAJOR=$1
-
-  if [ "$NODE_MAJOR" -ge "$nodejs_min_version" ]; then
-    return 0 # success
-  else
-    return 1 # error
-  fi
-}
-
 install_deps() {
   echo "Checking linux distro..."
 
   DISTRO=$(get_distro)
-  NODE_OK=false
 
   echo "Detected distro: $DISTRO"
 
@@ -55,21 +41,6 @@ install_deps() {
 
       echoandrun sudo apt update
 
-      echo "Checking available nodejs version..."
-
-      NODE_CANDIDATE="$(sudo apt-cache policy nodejs | grep Candidate | awk '{print $2}')"
-
-      if [ -n "$NODE_CANDIDATE" ] && [ "$NODE_CANDIDATE" != "(none)" ]; then
-        NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
-        if check_nodejs_version "$NODE_MAJOR"; then
-          NODE_OK=true
-        else
-          echo "⚠️ Node.js $NODE_CANDIDATE lower than $nodejs_min_version. Skipping node & language server installation."
-        fi
-      else
-        echo "⚠️ Node.js is not available in apt repositories."
-      fi
-
       echo "Installing dependencies..."
 
       echoandrun sudo apt install -y \
@@ -78,30 +49,10 @@ install_deps() {
         "${terminal_handling[@]}" \
         "${neovim_dependencies[@]}"
 
-      if [ "$NODE_OK" = true ]; then
-        echoandrun sudo apt install -y "${neovim_dependencies_lsp[@]}"
-        echo "✅ Successfully installed node & language server!"
-      else
-        echo "Skipped node & language server."
-      fi
       ;;
 
     centos | rhel)
       echo "System is centos/rhel."
-      echo "Checking available nodejs version..."
-
-      NODE_CANDIDATE="$(sudo yum info nodejs 2>/dev/null | grep Version | awk '{print $3}')"
-
-      if [ -n "$NODE_CANDIDATE" ]; then
-        NODE_MAJOR=$(echo "$NODE_CANDIDATE" | cut -d. -f1)
-        if check_nodejs_version "$NODE_MAJOR"; then
-          NODE_OK=true
-        else
-          echo "⚠️ Node.js $NODE_CANDIDATE lower than $nodejs_min_version. Skipping node & language server installation."
-        fi
-      else
-        echo "⚠️ Node.js is not available in yum repositories."
-      fi
 
       echo "Installing dependencies..."
 
@@ -111,12 +62,6 @@ install_deps() {
         "${terminal_handling[@]}" \
         "${neovim_dependencies[@]}"
 
-      if [ "$NODE_OK" = true ]; then
-        echoandrun sudo yum install -y "${neovim_dependencies_lsp[@]}"
-        echo "✅ Successfully installed node & language server!"
-      else
-        echo "Skipped node & language server."
-      fi
       ;;
 
     *)

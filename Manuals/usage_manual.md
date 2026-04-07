@@ -100,13 +100,20 @@ An improved version of Vim with better extensibility and configuration.
 - Neovim handling for the user is nearly the same as basic vi/vim. It is highly recommended to at least look up basic vim commands beforehand.
 - **Do not give up after initially seeing all the available keybinds.** Start with the basics, and soon you'll learn to love neovim. Trust me.
 
+### Tools
+- `, + l` opens Lazy. This is the tool which will install and update our plugins for neovim.
+- `, + m` opens Mason. This is the tool which will install and update our LSP servers for neovim.
+
 ### Hotkeys
 - `Shift + i` to enter a paste-friendly insert mode that disables UI elements that could interfere with pasting text. Press `Escape` to exit this mode.
 - `Spacebar` (LEADER key for the snacks plugin) or `,` (LEADER key for Neovim) to display your shortcuts, e.g., save/quit with `, + w/q` instead of `:w/q`.
 - `gcc` to comment/uncomment the current line based on filetype.
 - Swap between files by pressing `-` to open the Oil file manager, or `Ctrl + n` / `Ctrl + p` to switch to next/previous file.
-- run `:Inspect` on an element to find out e.g. why the element is a different color, use `:help Command` to see what a command does
-- Language server: Hover over e.g. a function, then press `K` to hover docs, `gr` for references
+- Run `:Inspect` on an element to find out e.g. why the element is a different color, use `:help Command` to see what a command does
+- Hover over e.g. a function, then press `K` to hover docs, `gr` for references
+
+### Troubleshooting
+- `:lua Snacks.notifier.show_history()` to display vim notify error history
 
 ---
 

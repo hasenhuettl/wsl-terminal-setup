@@ -6,7 +6,7 @@ set -euo pipefail
 basic_tools=(curl tar)
 useful_tools=(wget git)
 terminal_handling=(tmux bash zsh rsync)
-neovim_dependencies=(fzf fd-find ripgrep luarocks)
+neovim_dependencies=(fzf fd-find ripgrep luarocks pip shfmt shellcheck)
 
 echoandrun() {
   echo "\$ $*" ;
@@ -95,6 +95,7 @@ install_neovim() {
   echo "Installing Neovim..."
 
   curl -LO "$neovim_url"
+  echoandrun sudo rm -rf "/opt/nvim-linux-x86_64"
   echoandrun sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
   echoandrun rm nvim-linux-x86_64.tar.gz
 

@@ -91,6 +91,7 @@ keymap("n", "<Leader>Q", ":q!<CR>", { noremap = true }) -- Hard quit by using ,Q
 
 -- Open menus
 keymap("n", "<Leader>l", ":Lazy<CR>", { noremap = true }) -- Open Lazy
+keymap("n", "<Leader>m", ":Mason<CR>", { noremap = true }) -- Open Mason
 keymap("n", "<Leader>p", ":ClipboardHistory<CR>", opts) -- Open clipboard history
 
 -- Tabs

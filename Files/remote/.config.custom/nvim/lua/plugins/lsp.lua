@@ -21,6 +21,7 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     config = function()
       -- Mason
@@ -60,7 +61,11 @@ return {
       vim.lsp.enable("lua_ls")
 
       -- Linters
-      require("mason-registry").get_package("shellcheck"):install()
+      require("mason-tool-installer").setup({
+        ensure_installed = {
+          "shellcheck",
+        },
+      })
 
     end,
   },

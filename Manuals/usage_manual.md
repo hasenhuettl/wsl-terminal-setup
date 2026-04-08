@@ -1,3 +1,13 @@
+# Table of Contents
+- [WSL](#wsl)
+- [WinTerminal](#winterminal)
+- [WSL Linux OS](#wsl-linux-os)
+- [Tmux](#tmux)
+- [Zsh](#zsh)
+- [Neovim](#neovim)
+- [SSH Wrapper](#ssh-wrapper)
+
+
 # Usage Manual
 
 This manual provides a quick overview and useful commands/configurations for the main tools and environments in your development setup.
@@ -35,9 +45,11 @@ WinTerminal (Windows Terminal) is a terminal application for managing supports m
 
 ---
 
-## Linux OS
+## WSL Linux OS
 
-This script was implemented and tested using WSL Ubuntu 20.04, 22.04, and 24.04. Other linux distributions should work after adapting the installation scripts accordingly.
+This script was implemented and tested using WSL Ubuntu 20.04, 22.04, and 24.04.
+
+Other linux distributions should work after adapting the installation scripts accordingly.
 
 ---
 
@@ -117,7 +129,7 @@ An improved version of Vim with better extensibility and configuration.
 
 ---
 
-## Custom SSH
+## SSH Wrapper
 
 The ssh command is aliased to run $HOME/scripts/myssh.py. You can use either `ussh` or `\ssh` to run standard ssh.
 

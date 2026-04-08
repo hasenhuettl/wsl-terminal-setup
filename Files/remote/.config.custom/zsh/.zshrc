@@ -1,3 +1,5 @@
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
 
 source $CONFIG_LOCATION/zsh/plugins/* # place plugin files (e.g.: plugin.zsh) in this directory
 

@@ -47,7 +47,6 @@ return {
       null_ls.setup({
         sources = {
           shellcheck,
-          null_ls.builtins.formatting.shfmt,
         },
       })
     end,

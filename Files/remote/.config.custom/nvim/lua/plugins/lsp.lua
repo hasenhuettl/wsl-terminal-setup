@@ -31,8 +31,8 @@ return {
           "superhtml",
           "quick_lint_js",
           "ty",
-          "lua_ls",
           "marksman",
+          "lua_ls",
         },
       })
 
@@ -58,6 +58,9 @@ return {
         },
       })
       vim.lsp.enable("lua_ls")
+
+      -- Linters
+      require("mason-registry").get_package("shellcheck"):install()
 
     end,
   },

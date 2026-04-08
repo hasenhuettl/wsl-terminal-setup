@@ -6,7 +6,7 @@ set -euo pipefail
 basic_tools=(curl tar)
 useful_tools=(wget git)
 terminal_handling=(tmux bash zsh rsync)
-neovim_dependencies=(fzf fd-find ripgrep luarocks pip shfmt shellcheck)
+neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip)
 
 echoandrun() {
   echo "\$ $*" ;
@@ -104,8 +104,8 @@ install_neovim() {
   echo "✅ Dependencies installed at /opt/nvim-linux-x86_64 and linked to /usr/local/bin/nvim"
   nvim --version
 
-  echo "Sourcing ZSH again..."
-  source "$HOME/.config.custom/zsh/.zshrc"
+  echo "Neovim successfully installed."
+  printf 'To update zsh aliases, please source zsh again: \e[34msource %s/.config.custom/zsh/.zshrc\e[0m\n' "$HOME"
 }
 
 main() {

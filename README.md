@@ -88,18 +88,54 @@ Get-ExecutionPolicy
 
 ## Linux:
 
-### Install:
+Please see:
 
-TBD..
-
-```
-git clone https://github.com/hasenhuettl/wsl-terminal-setup/tree/main
-execute what?
-```
+https://github.com/hasenhuettl/dotfiles
 
 # USAGE
 
-For a quickguide on how to use this setup, please see:
+---
 
-https://github.com/hasenhuettl/wsl-terminal-setup/blob/main/Manuals/usage_manual.md
+## WSL
+
+WSL (Windows Subsystem for Linux) allows you to run a Linux environment directly on Windows without the need for a virtual machine.
+
+---
+
+### Administering WSL in Windows CMD or PowerShell
+
+You can manage WSL distributions and sessions directly from Windows Command Prompt or PowerShell using WSL commands.
+
+- `wsl -v`
+  Check the installed WSL version.
+- `wsl --list --verbose`
+  List all installed WSL distributions and their status.
+- `wsl --shutdown`
+  Restart all running WSL sessions by shutting them down.
+
+---
+
+## WinTerminal
+
+WinTerminal (Windows Terminal) is a terminal application for managing supports multiple tabs and shells in Windows.
+
+### Hotkeys
+- `Ctrl + T`
+  Open a new tab.
+- `Ctrl [+ Shift] + Tab`
+  Navigate between tabs.
+
+---
+
+## WSL Linux OS
+
+This script was implemented and tested using WSL Ubuntu 20.04, 22.04, and 24.04.
+
+Other linux distributions should work after adapting the installation scripts accordingly.
+
+---
+
+For infos regarding TMUX, ZSH, NEOVIM, or other terminal config, please see:
+
+https://github.com/hasenhuettl/dotfiles/README.md
 

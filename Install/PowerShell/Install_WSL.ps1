@@ -180,12 +180,6 @@ if (Should-Run-Step "Setup") {
 	Write-Host "Running APT update and install..."
 	bash "$linuxStyleRootPath/Install/Bash/wsl_setup.sh"
 
-	Write-Host "Installing packages..."
-	bash "$linuxStyleRootPath/Install/Bash/install_nvim.sh"
-
-	Write-Host "Placing config files..."
-	bash "$linuxStyleRootPath/Install/Bash/userconfig_setup.sh"
-
 	# Restart WSL
 	wsl --shutdown
 

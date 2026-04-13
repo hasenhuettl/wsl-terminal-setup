@@ -1,8 +1,0 @@
-# Put custom config (e.g.: aliases) here:
-
-# Output holiday specific greeting
-enable_holidays=true
-
-# general
-alias please='sudo'
-

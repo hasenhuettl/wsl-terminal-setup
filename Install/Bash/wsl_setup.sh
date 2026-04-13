@@ -29,5 +29,10 @@ echo -e 'LANG=en_US.UTF-8\nLANGUAGE=en_US:en\n' | sudo tee /etc/default/locale
 
 touch ~/.hushlogin # Disable ubuntu motd, since this would be overwritten anyway
 
+# Install dotfiles repo
+mkdir -p ~/git
+git clone https://github.com/hasenhuettl/dotfiles.git ~/git/dotfiles
+bash ~/git/dotfiles/bootstrap.sh
+
 # exit
 

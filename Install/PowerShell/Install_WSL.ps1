@@ -71,7 +71,9 @@ Write-Host "$Step"
 # Todo: Only run if WSL is not installed:
 if (Should-Run-Step "Install") {
 	Write-Host "Installing WSL distribution $distribution..."
-	Write-Host "If you are asked to setup user + password, please enter 'exit' afterwards." -ForegroundColor Magenta
+	Write-Host "Setup will ask you to create default user and password." -ForegroundColor Yellow
+	Write-Host "After setting up the user + password, you will be in the terminal." -ForegroundColor Yellow
+	Write-Host "Please exit this terminal afterwards to return to setup." -ForegroundColor Yellow
 
 	wsl --install --distribution "$distribution"
 

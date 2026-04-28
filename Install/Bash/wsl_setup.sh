@@ -5,6 +5,7 @@ set -e
 cd
 sudo apt-get update
 sudo apt-get upgrade -y
+sudo apt-get install binfmt-support # see https://github.com/microsoft/WSL/issues/8952
 oldhostname="$(hostname)"
 newhostname="$(cmd.exe /C hostname | tr -d '\n' | tr -d '\r')-wsl" # Generate "HOSTSYSTEM-wsl" hostname
 

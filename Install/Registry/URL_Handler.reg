@@ -1,15 +1,22 @@
 Windows Registry Editor Version 5.00
 
 [HKEY_CLASSES_ROOT\ssh]
-@="URL:ssh Protocol"
+@="URL: ssh Protocol"
 "URL Protocol"=""
 
-[HKEY_CLASSES_ROOT\ssh\DefaultIcon]
-@="\"c:\\windows\\system32\\wsl.exe\""
+[HKEY_CLASSES_ROOT\ssh_custom_handler\shell\open\command]
+@="c:\\windows\\system32\\wsl.exe -e tmux new-window \"ssh-url %1 || sleep 5\""
 
-[HKEY_CLASSES_ROOT\ssh\shell]
+;You can use any ICO File or just using mobaxterms Icon
+[HKEY_CLASSES_ROOT\ssh_custom_handler\Application]
+"ApplicationName"="Custom SSH Handler"
+"ApplicationDescription"="Custom SSH Handler"
+"ApplicationCompany"="Custom SSH Handler"
 
-[HKEY_CLASSES_ROOT\ssh\shell\open]
+;Register Capability for Windows Default Apps
 
-[HKEY_CLASSES_ROOT\ssh\shell\open\command]
-@="c:\\windows\\system32\\wsl.exe -e ssh-url %1"
+[HKEY_CLASSES_ROOT\ssh_custom_handler\Capabilities\UrlAssociations]
+"ssh"="ssh_custom_handler"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\RegisteredApplications]
+"SSH Custom handler"="Software\\Classes\\ssh_custom_handler\\Capabilities"
